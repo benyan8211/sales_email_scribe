@@ -6,3 +6,4 @@ This is an AI powered scribe that writes high quality, custom tailored sales ema
 
 - Django Framework (Python)
 - OpenAI Agents SDK
+- uv

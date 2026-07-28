@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-g@*55q!_8#p5$gos(1oxo8lze6m$b)an4tgr%wjix1c-&v^0yw
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['sales-email-scribe.onrender.com']
 
 
 # Application definition

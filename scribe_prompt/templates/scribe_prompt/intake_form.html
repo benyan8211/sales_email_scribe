@@ -1,8 +1,38 @@
 {% extends 'scribe_prompt/scribe_prompt_container.html' %}
 {% load static %}
 
+{% block sub_css_files %}
+    <link rel="stylesheet" href="{% static 'scribe_prompt/css/intake_form.css' %}">
+{% endblock %}
+
 {% block subcontent %}
-    <section id="hello-world-section">
-        <h1>Hello World!</h1>
+    <section id="welcome-section">
+        <h1 class="center_welcome_text_h1">
+            Hello, welcome to Sales Email <span class="scribe_text">Scribe</span>! 
+        </h1>
+        <h3 class="center_welcome_text_h3">Please fill out the intake form below to get started!</h3>
+    </section>
+    <section id="intake-form-section">
+        <form method="POST" novalidate>
+            {% csrf_token %}
+            <div class="form-control {% if form.user_name.errors or errors %}error_styles{% endif %}">
+                {{ form.user_name.label_tag }}
+                {{ form.user_name }}
+                {% if form.user_name.help_text %}
+                    <small class="help-text">{{ form.user_name.help_text }}</small>
+                {% endif %}
+                {% if errors.user_name %}
+                    <ul>
+                        {% for error in errors.user_name %}
+                            <li>{{ error.message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                {{ form.user_name.errors }}
+            </div>
+            <div class="next_btn_container">
+                <button>Next</button>
+            </div>
+        </form>
     </section>
 {% endblock %}

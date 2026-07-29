@@ -1,7 +1,32 @@
 @import url('https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&display=swap');
 
 html {
-    font-family: "Google Sans Flex", sans-serif;
+    font-family: "Google Sans Flex", sans-serif !important;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    margin-left: 10px;
+}
+
+button:hover {
+    background-color: #15a5de;
+}
+
+/* Highlights the border while clicking and after being clicked */
+button:focus, 
+button:active {
+    border-color: #0056b3;
+    /* Soft glow ring effect standard in modern professional UI */
+    box-shadow: 0 0 0 4px rgba(38, 143, 255, 0.5); 
 }
 
 .website_logo_section {

@@ -1,0 +1,78 @@
+.scribe_text {
+    background: linear-gradient(to right, #2b6cb0, #319795, #d69e2e, #dd6b20);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+}
+
+.center_welcome_text_h1 {
+    padding-top: 25px;
+}
+
+.center_welcome_text_h1,
+.center_welcome_text_h3 {
+    justify-self: center;
+}
+
+.help-text {
+    font-size: 0.85rem;
+    color: #6c757d;      /* A soft gray color */
+    display: block;       /* Forces it onto a new line under the input */
+    margin-top: 0.25rem;  /* Adds a tiny gap below the box */
+}
+
+form {
+    margin: 3rem auto;
+    width: 90%;
+    max-width: 40rem;
+    padding: 1rem;
+    border-radius: 12px;
+    background-color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+}
+
+.form-control {
+    margin-bottom: 1rem;
+}
+
+.form-control input {
+    padding: 0.25rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    display: block;
+    width: 22rem;
+}
+
+.form-control input:focus {
+    border-color: #0056b3;
+    outline: none;
+}
+
+.form-control label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.error_styles li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    color: rgb(205, 1, 1);
+}
+
+.error_styles input {
+    border-color: rgb(205, 1, 1);
+    background-color: #fde3e3;
+}
+
+.next_btn_container {
+    justify-self: right;
+}
+
+label.required::after {
+    content: " *";
+    color: red;
+    font-weight: bold;
+}

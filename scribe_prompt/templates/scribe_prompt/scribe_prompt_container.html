@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css_files %}
+    <link rel="stylesheet" href="{% static 'scribe_prompt/css/scribe_prompt_container.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="stepper-container">
+        <ol class="stepper-list">
+            <li class="step {% if current_step > 1 %}done{% elif current_step == 1 %}active{% endif %}">
+                <span class="circle">1</span>
+                <span class="label">Lead Intake</span>
+            </li>
+            <li class="step {% if current_step > 2 %}done{% elif current_step == 2 %}active{% endif %}">
+                <span class="circle">2</span>
+                <span class="label">Review & Feedback</span>
+            </li>
+            <li class="step {% if current_step >= 3 %}done{% elif current_step == 3 %}active{% endif %}">
+                <span class="circle">3</span>
+                <span class="label">Confirmation</span>
+            </li>
+        </ol>
+    </div>
+    {% block subcontent %}{% endblock %}
+{% endblock %}

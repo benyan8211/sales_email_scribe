@@ -1,0 +1,75 @@
+.stepper-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+.stepper-list {
+    display: flex;
+    justify-content: space-between;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    flex: 1; /* Distributes steps evenly */
+}
+
+.circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #e0e0e0;
+    color: #777;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-bottom: 6px;
+    z-index: 2; /* Keeps circles on top of the line */
+}
+
+.label {
+    font-size: 14px;
+    color: #777;
+    z-index: 2;
+}
+  
+
+.step::before {
+    content: "";
+    position: absolute;
+    top: 16px; /* Positions line vertically in the middle of the circle */
+    left: 50%; /* Starts the line from the center of the current circle */
+    width: 100%; /* Stretches line to the next circle */
+    height: 2px;
+    background-color: #e0e0e0; /* Gray color for the line */
+    z-index: 1; /* Places line behind circles */
+}
+  
+  /* Remove the line from the very last step */
+.step:last-child::before {
+    display: none;
+}
+  
+  /* Circle and Label State Colors */
+.step.active .circle {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.step.active .label {
+    color: #007bff;
+    font-weight: bold;
+}
+
+.step.done .circle {
+    background-color: #28a745;
+    color: #fff;
+}
+  

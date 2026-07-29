@@ -1,0 +1,47 @@
+.website_logo_section {
+    justify-self: center;
+}
+
+.website_introduction_text {
+    font-size: 54px;
+    max-width: 82%;
+    text-align: center;
+    justify-self: center;
+}
+
+.ai_scribe_text {
+    background: linear-gradient(to right, #2b6cb0, #319795, #d69e2e, #dd6b20);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+}
+
+.get_started_section {
+    justify-self: center;
+}
+
+.get_started_btn {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    margin-left: 10px;
+}
+
+.get_started_btn:hover {
+    background-color: #15a5de;
+}
+
+/* Highlights the border while clicking and after being clicked */
+.get_started_btn:focus, 
+.get_started_btn:active {
+    border-color: #0056b3;
+    /* Soft glow ring effect standard in modern professional UI */
+    box-shadow: 0 0 0 4px rgba(38, 143, 255, 0.5); 
+}

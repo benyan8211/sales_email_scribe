@@ -5,8 +5,8 @@ from django.shortcuts import render
 def starting_page(request):
     return render(request, 'scribe_prompt/starting_page.html')
 
-def lead_intake(request):
-    return render(request, 'scribe_prompt/lead_intake.html', {"current_step": 1})
+def intake_form(request):
+    return render(request, 'scribe_prompt/intake_form.html', {"current_step": 1})
 
 def review_and_feedback(request):
     pass

@@ -6,7 +6,7 @@ def starting_page(request):
     return render(request, 'scribe_prompt/starting_page.html')
 
 def lead_intake(request):
-    pass
+    return render(request, 'scribe_prompt/lead_intake.html')
 
 def review_and_feedback(request):
     pass

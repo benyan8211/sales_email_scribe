@@ -3,3 +3,7 @@
 html {
     font-family: "Google Sans Flex", sans-serif;
 }
+
+.website_logo_section {
+    justify-self: center;
+}

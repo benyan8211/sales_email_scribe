@@ -1,29 +1,23 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title%}
-    Sales Email Scribe
-{% endblock %}
-
 {% block css_files %}
     <link rel="stylesheet" href="{% static 'scribe_prompt/css/starting_page.css' %}">
 {% endblock %}
 
 {% block content %}
-    <section class="website_logo_section" id="website-title">
-        <img
-            src="{% static 'scribe_prompt/images/sales_email_scribe_logo.png' %}" 
-            width="600" 
-            height="300" 
-            alt="website logo"
-        />
-    </section>
     <section id="website-introduction">
         <h1 class="website_introduction_text">
             Introducing your <span class="ai_scribe_text">AI scribe</span> to draft the perfect sales email! It's free to use!
         </h1>
     </section>
     <section class="get_started_section" id="get-started">
-        <button class="get_started_btn">Get Started</button>
+        <button id="get-started-btn" class="get_started_btn">Get Started</button>
     </section>
+    <script>
+        const get_started_btn = document.getElementById("get-started-btn");
+        get_started_btn.addEventListener('click', function() {
+            window.location.href = '/lead-intake';
+        });
+    </script>
 {% endblock %}

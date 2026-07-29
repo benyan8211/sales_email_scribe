@@ -125,6 +125,11 @@ STATICFILES_DIRS = [
 ]
 
 STORAGES = {
+    # 1. Media files storage (Mandatory to include)
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    # 2. WhiteNoise static files storage
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },

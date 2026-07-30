@@ -1,5 +1,6 @@
 {% extends 'scribe_prompt/scribe_prompt_container.html' %}
 {% load static %}
+{% load custom_tags %}
 
 {% block sub_css_files %}
     <link rel="stylesheet" href="{% static 'scribe_prompt/css/intake_form.css' %}">
@@ -8,31 +9,91 @@
 {% block subcontent %}
     <section id="welcome-section">
         <h1 class="center_welcome_text_h1">
-            Hello, welcome to Sales Email <span class="scribe_text">Scribe</span>! 
+            Hello, welcome to Sales Email <span class="colorful_scribe_text">Scribe</span>! 
         </h1>
         <h3 class="center_welcome_text_h3">Please fill out the intake form below to get started!</h3>
     </section>
     <section id="intake-form-section">
-        <form method="POST" novalidate>
+        <form id="myForm" method="POST" novalidate>
             {% csrf_token %}
-            <div class="form-control {% if form.user_name.errors or errors %}error_styles{% endif %}">
-                {{ form.user_name.label_tag }}
-                {{ form.user_name }}
-                {% if form.user_name.help_text %}
-                    <small class="help-text">{{ form.user_name.help_text }}</small>
-                {% endif %}
-                {% if errors.user_name %}
-                    <ul>
-                        {% for error in errors.user_name %}
-                            <li>{{ error.message }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-                {{ form.user_name.errors }}
-            </div>
+            {% for field in form %}
+                <div class="form-control">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% if field.help_text %}
+                        <div class="help-text">
+                            {{ field.help_text }}
+                        </div>
+                    {% endif %}
+                    {{ field.errors }}
+                </div>
+            {% endfor %}
             <div class="next_btn_container">
                 <button>Next</button>
             </div>
         </form>
     </section>
+    <script>
+        function displayFormErrors(errors) {
+            // 1. Instantly find and remove all old error elements from the page
+            document.querySelectorAll('.field-error').forEach(el => el.remove());
+
+            // 2. Loop through the new errors sent by Django
+            for (const [fieldName, errorList] of Object.entries(errors)) {
+                // Find the input element by its HTML "name" attribute
+                const inputField = document.querySelector(`[name="${fieldName}"]`);
+                
+                if (inputField) {
+                    // Django's get_json_data() nests the message inside an array of objects
+                    const errorMessageText = errorList[0].message; 
+
+                    // Create a new text element for the error
+                    const errorElement = document.createElement('small');
+                    errorElement.className = 'field-error'; // Matches the selector above
+                    errorElement.style.color = 'red';
+                    errorElement.style.display = 'block';
+                    errorElement.style.marginBottom = '1rem';
+                    errorElement.innerText = errorMessageText;
+
+                    // Insert the error directly below the incorrect input field
+                    inputField.parentNode.after(errorElement);
+                }
+            }
+        }
+        document.getElementById('myForm').addEventListener('submit', function(event) {
+            // 1. Stop the browser from performing a full page reload
+            event.preventDefault();
+
+            // 2. Gather the form data, automatically including the CSRF token
+            const formData = new FormData(this);
+            console.log(this);
+            console.log(Object.fromEntries(formData));
+
+            // 3. Send the asynchronous request to Django
+            fetch('/submit-form-view', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest' 
+                }
+            })
+            .then(response => response.json()) // Parse the JSON response from the server
+            .then(data => {
+                console.log(data);
+                if (!data.success) {
+                    // Handle validation errors
+                    if (data.errors) {
+                        displayFormErrors(data.errors);
+                    }
+                    throw new Error('Form validation failed.');
+                } else {
+                    window.location.href = "/review-and-feedback"; 
+                    return data;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
 {% endblock %}

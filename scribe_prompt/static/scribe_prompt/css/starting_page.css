@@ -5,14 +5,6 @@
     justify-self: center;
 }
 
-.ai_scribe_text {
-    background: linear-gradient(to right, #2b6cb0, #319795, #d69e2e, #dd6b20);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-fill-color: transparent;
-}
-
 .get_started_section {
     justify-self: center;
 }

@@ -8,6 +8,7 @@
 }
 
 .help-text {
+    font-family: "Google Sans Flex", sans-serif !important;
     font-size: 0.85rem;
     color: #6c757d;
     display: block;       
@@ -29,7 +30,12 @@ form {
     margin-bottom: 1rem;
 }
 
-.form-control input {
+.form-control textarea {
+    height: 22rem;
+}
+
+.form-control input, textarea {
+    font-family: "Google Sans Flex", sans-serif !important;
     padding: 0.25rem;
     border-radius: 4px;
     border: 1px solid #ccc;
@@ -37,12 +43,13 @@ form {
     width: 22rem;
 }
 
-.form-control input:focus {
+.form-control input:focus, textarea:focus {
     border-color: #0056b3;
     outline: none;
 }
 
 .form-control label {
+    font-family: "Google Sans Flex", sans-serif !important;
     font-weight: bold;
     display: block;
     margin-bottom: 0.5rem;
@@ -56,4 +63,11 @@ label.required::after {
     content: " *";
     color: red;
     font-weight: bold;
+}
+
+.field_error {
+    font-family: "Google Sans Flex", sans-serif !important;
+    color: red;
+    display: block;
+    margin-bottom: 1rem;
 }

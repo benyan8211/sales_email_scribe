@@ -5,6 +5,7 @@ html {
 }
 
 button {
+    font-family: "Google Sans Flex", sans-serif !important;
     background-color: #007bff;
     color: white;
     padding: 10px 20px;

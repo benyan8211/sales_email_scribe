@@ -18,6 +18,11 @@ def submit_form_view(request):
         form = IntakeForm(request.POST)
         if form.is_valid():            
             # Return a JSON response instead of a full HTML template
+            request.session['user_name'] = form.cleaned_data.get('user_name')
+            request.session['user_email'] = form.cleaned_data.get('user_email')
+            request.session['company_name'] = form.cleaned_data.get('company_name')
+            request.session['product_name'] = form.cleaned_data.get('product_name')
+            request.session['product_details'] = form.cleaned_data.get('product_details')
             return JsonResponse({
                 'success': True, 
                 'message': 'Form submitted successfully!'

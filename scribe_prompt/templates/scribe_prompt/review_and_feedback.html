@@ -1,8 +1,17 @@
 {% extends 'scribe_prompt/scribe_prompt_container.html' %}
 {% load static %}
 
+{% block sub_css_files %}
+    <link rel="stylesheet" href="{% static 'scribe_prompt/css/review_and_feedback.css' %}">
+{% endblock %}
+
 {% block subcontent %}
-    <section id="welcome-section">
-        <h1>Hello!</h1>
-    </section>
+    <!-- This shows up instantly -->
+    <div id="loading-container" class="loading_container">
+        <div class="spinner"></div>
+        <p style="text-align: center;">Processing your request, please wait...</p>
+    </div>
+
+    <!-- The view will stream content directly into here -->
+    <div id="content-container">
 {% endblock %}

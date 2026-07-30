@@ -16,16 +16,27 @@
         <form id="myForm" method="POST" novalidate>
             {% csrf_token %}
             {% for field in form %}
-                <div class="form-control">
-                    {{ field.label_tag }}
-                    {{ field }}
-                    {% if field.help_text %}
-                        <div class="help-text">
-                            {{ field.help_text }}
-                        </div>
-                    {% endif %}
-                    {{ field.errors }}
-                </div>
+                {% if field.widget_type == 'radioselect' %}
+                    <div id="tone-of-email-select-group" class="tone_of_email_select_group">
+                        <span class="radio_select_main_label">{{ field.label }}</span>
+                        {% for radio in field %}
+                            <span class="radio_select_option">
+                                {{ radio.tag }} <label for="{{ radio.id_for_label }}">{{ radio.choice_label }}</label>
+                            </span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="form-control">
+                        {{ field.label_tag }}
+                        {{ field }}
+                        {% if field.help_text %}
+                            <div class="help-text">
+                                {{ field.help_text }}
+                            </div>
+                        {% endif %}
+                        {{ field.errors }}
+                    </div>
+                {% endif %}
             {% endfor %}
             <div class="next_btn_container">
                 <button>Next</button>
@@ -35,12 +46,13 @@
     <script>
         function displayFormErrors(errors) {
             // 1. Instantly find and remove all old error elements from the page
-            document.querySelectorAll('.field-error').forEach(el => el.remove());
+            document.querySelectorAll('.field_error').forEach(el => el.remove());
 
             // 2. Loop through the new errors sent by Django
             for (const [fieldName, errorList] of Object.entries(errors)) {
                 // Find the input element by its HTML "name" attribute
-                const inputField = document.querySelector(`[name="${fieldName}"]`);
+                let inputField = document.querySelector(`[name="${fieldName}"]`);
+
                 
                 if (inputField) {
                     // Django's get_json_data() nests the message inside an array of objects
@@ -51,8 +63,12 @@
                     errorElement.className = 'field_error'; // Matches the selector above
                     errorElement.innerText = errorMessageText;
 
-                    // Insert the error directly below the incorrect input field
-                    inputField.parentNode.after(errorElement);
+                    if (fieldName === "tone_of_email") {
+                        inputField.parentNode.parentNode.after(errorElement);
+                    } else {
+                        // Insert the error directly below the incorrect input field
+                        inputField.parentNode.after(errorElement);
+                    }
                 }
             }
         }

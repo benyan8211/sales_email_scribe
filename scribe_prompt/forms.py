@@ -19,4 +19,18 @@ class IntakeForm(forms.Form):
         help_text="Maximum 2000 characters.", 
         error_messages={"required": "Your company's product/service description cannot be blank."})
 
+    TONE_CHOICES = [
+        ('serious', 'Serious'),
+        ('fun', 'Fun'),
+        ('a_mix_of_both', 'A mix of both'),
+        ('i_am_not_sure', 'I am not sure')
+    ]
+    
+    tone_of_email = forms.ChoiceField(
+        choices=TONE_CHOICES,
+        widget=forms.RadioSelect,
+        label="What should be the tone of the sales email?",
+        error_messages={"required": "You must select an option."}
+    )
+
     required_css_class = 'required' 

@@ -14,7 +14,9 @@
 }
 
 form {
-    margin: 3rem auto;
+    justify-self: center;
+    margin-left: 25px;
+    margin-bottom: 40px;
     width: 90%;
     max-width: 40rem;
     padding: 1rem;

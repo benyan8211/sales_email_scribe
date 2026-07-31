@@ -1,7 +1,7 @@
 import os
 
 from django.shortcuts import render
-from django.http import StreamingHttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.template.loader import render_to_string
 
 from .forms import IntakeForm
@@ -49,59 +49,46 @@ def submit_form_view(request):
 
 
 def review_and_feedback(request):
-    def stream_response():
-        async def execute_sales_agent(system_prompt):
+    return render(request, 'scribe_prompt/review_and_feedback.html', { 'current_step': 2})
+
+def slow_processing_view(request):
+    async def execute_sales_agent(system_prompt):
             sales_agent = Agent(name="Sales Agent", instructions=system_prompt, model="gpt-5.4")
             # The 'trace' context customizes metadata visible on your OpenAI Dashboard
             with trace("Write a sales email"):
                 result = await Runner.run(sales_agent, "Write a sales email")
                 print(result.final_output)
-        
-        # 1. Yield the top half of the page immediately (with the spinner)
-        yield render_to_string('scribe_prompt/review_and_feedback.html', context={'current_step': 2})
-        
-        company_name = request.session['company_name']
-        product_name = request.session['product_name']
-        product_details = request.session['product_details']
-        tone_of_email = request.session['tone_of_email']
-        tone_of_email_description_catalog = {
-            "serious": """The tone of the sales email should be serious, and very professional.""",
-            "fun": """The tone of the sales email should be fun and lighthearted and contain mild humor.""",
-            "a_mix_of_both": """The tone of the sales email should be a mix of serious and fun. 
-            It should be professional, but also include hints of mild humor.""",
-            "i_am_not_sure": """The tone of the sales email has not been specified. Please use your best judgment."""
-        }
-        system_prompt = f"""You are a sales agent working for {company_name}, a company that is trying to sell {product_name}. 
-        
-        Here is a description of {product_name}:
-        {product_details}
 
-        You are tasked with writing sales emails.
+    company_name = request.session['company_name']
+    product_name = request.session['product_name']
+    product_details = request.session['product_details']
+    tone_of_email = request.session['tone_of_email']
+    tone_of_email_description_catalog = {
+        "serious": """The tone of the sales email should be serious, and very professional.""",
+        "fun": """The tone of the sales email should be fun and lighthearted and contain mild humor.""",
+        "a_mix_of_both": """The tone of the sales email should be a mix of serious and fun. 
+        It should be professional, but also include hints of mild humor.""",
+        "i_am_not_sure": """The tone of the sales email has not been specified. Please use your best judgment."""
+    }
+    system_prompt = f"""You are a sales agent working for {company_name}, a company that is trying to sell {product_name}. 
+    
+    Here is a description of {product_name}:
+    {product_details}
 
-        {tone_of_email_description_catalog.get(tone_of_email)}
-        """
+    You are tasked with writing sales emails.
 
-        print(system_prompt)
+    {tone_of_email_description_catalog.get(tone_of_email)}
+    """
 
-        async_to_sync(execute_sales_agent)(system_prompt)
+    print(system_prompt)
 
-        # 3. Yield the final content and a script to hide the spinner
-        yield f"""
-                <div>
-                    <h1>Processing Complete!</h1>
-                </div>
-            </div> <!-- Closes #content-container -->
-            
-            <script>
-                // Hide the spinner now that the data has arrived
-                document.getElementById('loading-container').style.display = 'none';
-            </script>
-        </body>
-        </html>
-        """
+    async_to_sync(execute_sales_agent)(system_prompt)
 
-    # Return a streaming response instead of a standard HttpResponse
-    return StreamingHttpResponse(stream_response())
+    return HttpResponse("""
+        <div>
+            <h1>Processing Complete!</h1>
+        </div>
+    """)
 
 def confirmation(request):
     pass

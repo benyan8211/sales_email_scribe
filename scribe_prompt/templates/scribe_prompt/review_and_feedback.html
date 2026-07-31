@@ -13,5 +13,27 @@
     </div>
 
     <!-- The view will stream content directly into here -->
-    <div id="content-container">
+    <div id="content-container" class="hidden"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch("{% url 'slow-processing' %}")
+            .then(response => {
+                    if (!response.ok) throw new Error("Server error");
+                    return response.text();
+                })
+                .then(pythonHtmlResult => {
+                    const outputDiv = document.getElementById("content-container");
+                    
+                    outputDiv.innerHTML += pythonHtmlResult;
+                    
+                    document.getElementById("loading-container").classList.add("hidden");
+                    outputDiv.classList.remove("hidden");
+                })
+                .catch(error => {
+                    console.error(error);
+                    document.getElementById("loading-screen").innerHTML = "<p style='color:red; text-align:center;'>Python execution failed.</p>";
+                });
+        });
+    </script>
 {% endblock %}

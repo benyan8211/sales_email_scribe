@@ -13,5 +13,11 @@
 .loading_container {
     margin-top: 70px;
 }
+
+.follow_up_questions_container {
+    text-align: center;
+}
+
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
 .hidden { display: none; }

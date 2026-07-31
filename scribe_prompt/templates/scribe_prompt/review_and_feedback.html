@@ -15,6 +15,14 @@
     <!-- The view will stream content directly into here -->
     <div id="content-container" class="hidden"></div>
 
+    <div id="follow-up-questions-container-1" class="hidden follow_up_questions_container">
+        <h2>Are you fully satisfied with this AI generated sales email?</h2>
+        <span>
+            <button>No</button>
+            <button>Yes</button>
+        </span>
+    </div>
+
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             fetch("{% url 'slow-processing' %}")
@@ -24,11 +32,13 @@
                 })
                 .then(pythonHtmlResult => {
                     const outputDiv = document.getElementById("content-container");
+                    const followUpQuestionsContainer1 = document.getElementById("follow-up-questions-container-1");
                     
                     outputDiv.innerHTML += pythonHtmlResult;
                     
                     document.getElementById("loading-container").classList.add("hidden");
                     outputDiv.classList.remove("hidden");
+                    followUpQuestionsContainer1.classList.remove("hidden");
                 })
                 .catch(error => {
                     console.error(error);

@@ -57,7 +57,7 @@ def slow_processing_view(request):
             # The 'trace' context customizes metadata visible on your OpenAI Dashboard
             with trace("Write a sales email"):
                 result = await Runner.run(sales_agent, "Write a sales email")
-                print(result.final_output)
+                return result.final_output
 
     company_name = request.session['company_name']
     product_name = request.session['product_name']
@@ -78,16 +78,17 @@ def slow_processing_view(request):
     You are tasked with writing sales emails.
 
     {tone_of_email_description_catalog.get(tone_of_email)}
+
+    Be sure to return your response in html. Make the email look aesthetically pleasing. Include the email's subject in a div that is center aligned.
+    Add a line break. Then include the html content within the body tag.
     """
 
     print(system_prompt)
 
-    async_to_sync(execute_sales_agent)(system_prompt)
+    sales_email = async_to_sync(execute_sales_agent)(system_prompt)
 
-    return HttpResponse("""
-        <div>
-            <h1>Processing Complete!</h1>
-        </div>
+    return HttpResponse(f"""
+        {sales_email}
     """)
 
 def confirmation(request):

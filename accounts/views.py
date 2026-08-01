@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.shortcuts import render, redirect
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth import authenticate, login, logout
@@ -32,7 +33,7 @@ def signup_view(request):
             })
             
             # Send the email message
-            send_mail(subject, message, 'from@example.com', [user.email])
+            send_mail(subject, message, settings.EMAIL_HOST_USER, [user.email])
             return render(request, 'accounts/activation_sent.html')
     else:
         form = SignUpForm()

@@ -44,3 +44,8 @@ button:active {
 .login_status {
     justify-self: right;
 }
+
+form:not(.logout-form) {
+    margin: 0; 
+    box-shadow: none;
+}

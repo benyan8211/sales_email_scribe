@@ -45,7 +45,7 @@ button:active {
     justify-self: right;
 }
 
-form:not(.logout-form) {
+form.logout-form {
     margin: 0; 
     box-shadow: none;
 }

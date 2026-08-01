@@ -27,8 +27,9 @@ form {
 }
 
 form.logout-form {
-    margin: 0; 
-    box-shadow: none;
+    margin: 0 !important; 
+    box-shadow: none !important;
+    padding: 0 !important;
 }
 
 .form-control {

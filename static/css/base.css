@@ -48,4 +48,5 @@ button:active {
 .logout-form {
     margin: 0; 
     box-shadow: none;
+    display: inline;
 }

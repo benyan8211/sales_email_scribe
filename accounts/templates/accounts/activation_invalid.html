@@ -1,2 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div>
+    <h2>Activation Link Invalid</h2>
+    <br/>
+    <br />
+    <span>The activation link is invalid or has expired. Please try signing up again.</span>
+</div>
+<script>
+    const login_status = document.getElementById("login-status");
+    login_status.classList.add("hidden");
+</script>
+{% endblock %}
+
 <h2>Activation Link Invalid</h2>
-<p>The activation link is invalid or has expired. Please try signing up again.</p>
+<p>The activation link is invalid or has expired. Request a new activation link.</p>

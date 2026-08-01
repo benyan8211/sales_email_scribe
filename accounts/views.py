@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from django.utils.encoding import force_bytes, force_str
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode, HttpResponseRedirect
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
@@ -73,7 +73,7 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 print("LOGIN SUCCESS!")
-                return redirect('scribe_prompt:starting-page')
+                return HttpResponseRedirect("/")
     else:
         form = AuthenticationForm()
         form.fields['username'].label = "Email Address"

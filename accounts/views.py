@@ -19,8 +19,6 @@ def signup_view(request):
             user = form.save(commit=False)
             user.is_active = False  # Deactivate account until email verification
             user.save()
-
-            print("HERE!")
             
             # Gather domain details to construct the verification URL
             current_site = get_current_site(request)
@@ -34,7 +32,8 @@ def signup_view(request):
                 'token': account_activation_token.make_token(user),
             })
 
-            print(message)
+            print(settings.EMAIL_HOST_USER)
+            print([user.email])
             
             # Send the email message
             send_mail(subject, message, settings.EMAIL_HOST_USER, [user.email])

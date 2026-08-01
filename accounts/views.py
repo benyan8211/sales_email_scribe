@@ -49,7 +49,6 @@ def signup_view(request):
     return render(request, 'accounts/signup.html', {'form': form})
 
 def activate_view(request, uidb64, token):
-    print("IN ACTIVATE!!!")
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
         user = User.objects.get(pk=uid)
@@ -57,7 +56,6 @@ def activate_view(request, uidb64, token):
         user = None
 
     if user is not None and account_activation_token.check_token(user, token):
-        print("IN IF STATEMENT")
         user.is_active = True
         user.save()
         print("USER UPDATED")

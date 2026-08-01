@@ -12,7 +12,7 @@
 <body>
     <div id="login-status" class="login_status">
         {% if user.is_authenticated %}
-            <span>Logged in as: {{ user.email }} | <form action="{% url 'logout' %}" method="POST" style="margin: 0; box-shadow: 0;">
+            <span>Logged in as: {{ user.email }} | <form action="{% url 'logout' %}" method="POST" style="margin: 0; box-shadow: none;">
                 {% csrf_token %}
                 <a href="#" onclick="this.closest('form').submit(); return false;">Log out</a>
               </form></span>

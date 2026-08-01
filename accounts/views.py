@@ -31,6 +31,8 @@ def signup_view(request):
                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                 'token': account_activation_token.make_token(user),
             })
+
+            print(message)
             
             # Send the email message
             send_mail(subject, message, settings.EMAIL_HOST_USER, [user.email])

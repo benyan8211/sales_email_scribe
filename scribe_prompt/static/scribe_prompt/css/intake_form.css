@@ -14,7 +14,7 @@
     display: block;       
 }
 
-form:not(.logout-form) {
+form {
     justify-self: center;
     margin-left: 25px;
     margin-bottom: 40px;
@@ -26,7 +26,7 @@ form:not(.logout-form) {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
 }
 
-.logout-form {
+form.logout-form {
     margin: 0; 
     box-shadow: none;
 }

@@ -36,7 +36,13 @@ def signup_view(request):
             print([user.email])
             
             # Send the email message
-            send_mail(subject, message, settings.EMAIL_HOST_USER, [user.email])
+            send_mail(
+                subject, 
+                message="Please use an HTML-compatible email client.", 
+                from_email=settings.EMAIL_HOST_USER, 
+                recipient_list=[user.email],
+                html_message=message,
+            )
             return render(request, 'accounts/activation_sent.html')
     else:
         form = SignUpForm()

@@ -8,10 +8,10 @@ class SignUpForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ['email'] # This removes the username input field from the UI
+        fields = ['email', 'password1', 'password2'] # This removes the username input field from the UI
 
     def clean_email(self):
-        email = self.cleaned_data.get('email')
+        email = self.cleaned_data.get("email")
         
         # Check if any user already has this email address in the database
         if User.objects.filter(email=email).exists():
@@ -22,7 +22,7 @@ class SignUpForm(UserCreationForm):
     def save(self, commit=True):
         user = super().save(commit=False)
         # Sets the hidden username field to match the email string
-        user.username = self.cleaned_data["email"] 
+        user.username = self.cleaned_data.get("email")
         if commit:
             user.save()
         return user

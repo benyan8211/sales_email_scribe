@@ -19,6 +19,8 @@ def signup_view(request):
             user = form.save(commit=False)
             user.is_active = False  # Deactivate account until email verification
             user.save()
+
+            print("HERE!")
             
             # Gather domain details to construct the verification URL
             current_site = get_current_site(request)

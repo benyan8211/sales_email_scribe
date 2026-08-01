@@ -1,6 +1,19 @@
-Hi {{ user.username }},
+<!DOCTYPE html>
+<html>
+<head>
+    <title>[Sales Email Scribe] Verify your email address</title>
+</head>
+<body>
+    <p>Hello,</p>
+    
+    <p>Hi {{ user.username }},</p>
 
-Please click on the link below to verify your email and activate your account:
-http://{{ domain }}{% url 'activate' uidb64=uid token=token %}
+    Please click on the link below to verify your email and activate your account:
+    http://{{ domain }}{% url 'activate' uidb64=uid token=token %}
 
-If you did not make this request, please ignore this email.
+    If you did not make this request, please ignore this email.
+
+    <p>Best regards,<br>
+    The Sales Email Scribe Team</p>
+</body>
+</html>

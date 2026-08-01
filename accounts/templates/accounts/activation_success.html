@@ -4,5 +4,12 @@
 {% block content %}
 <div>
     <h2>Account Activated!</h2>
+    <br/>
+    <br />
+    <a href="{% url 'login' %}">Go to log in</a>
 </div>
+<script>
+    const login_status = document.getElementById("login-status");
+    login_status.classList.add("hidden");
+</script>
 {% endblock %}

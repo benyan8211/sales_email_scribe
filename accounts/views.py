@@ -22,7 +22,7 @@ def signup_view(request):
             
             # Gather domain details to construct the verification URL
             current_site = get_current_site(request)
-            subject = 'Activate Your Account'
+            subject = '[Sales Email Scribe] Activate Your Account'
             
             # Render the email text body from a template
             message = render_to_string('accounts/activation_email.html', {

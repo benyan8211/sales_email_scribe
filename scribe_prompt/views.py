@@ -3,6 +3,7 @@ import os
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.template.loader import render_to_string
+from django.contrib.auth.decorators import login_required
 
 from .forms import IntakeForm
 from dotenv import load_dotenv
@@ -18,6 +19,7 @@ if os.path.exists(".env"):
 def starting_page(request):
     return render(request, 'scribe_prompt/starting_page.html')
 
+@login_required(login_url='/accounts/login/')
 def intake_form(request):
     form = IntakeForm()
     
@@ -27,8 +29,6 @@ def submit_form_view(request):
     if request.method == 'POST':
         form = IntakeForm(request.POST)
         if form.is_valid():            
-            request.session['user_name'] = form.cleaned_data.get('user_name')
-            request.session['user_email'] = form.cleaned_data.get('user_email')
             request.session['company_name'] = form.cleaned_data.get('company_name')
             request.session['product_name'] = form.cleaned_data.get('product_name')
             request.session['product_details'] = form.cleaned_data.get('product_details')
@@ -47,7 +47,7 @@ def submit_form_view(request):
             
     return JsonResponse({'success': False, 'errors': 'Invalid request method'}, status=405)
 
-
+@login_required(login_url='/accounts/login/')
 def review_and_feedback(request):
     return render(request, 'scribe_prompt/review_and_feedback.html', { 'current_step': 2})
 
@@ -91,5 +91,6 @@ def slow_processing_view(request):
         {sales_email}
     """)
 
+@login_required(login_url='/accounts/login/')
 def confirmation(request):
     pass

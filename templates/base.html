@@ -10,6 +10,16 @@
     {% block css_files %}{% endblock %}
 </head>
 <body>
+    <div id="login-status" class="login_status">
+        {% if user.is_authenticated %}
+            <span>Logged in as: {{ user.email }} | <form action="{% url 'logout' %}" method="POST" style="margin: 0;">
+                {% csrf_token %}
+                <a>Log out</a>
+              </form></span>
+        {% else %}
+            <a href="{% url 'login' %}">Log in here</a></p>
+        {% endif %}
+    </div>
     <section class="website_logo_section" id="website-title">
         <img
             src="{% static 'images/sales_email_scribe_logo.png' %}" 

@@ -17,7 +17,9 @@
     <script>
         const get_started_btn = document.getElementById("get-started-btn");
         get_started_btn.addEventListener('click', function() {
-            window.location.href = '/intake-form';
+            window.location.href = 'accounts/login';
         });
+        const login_status = document.getElementById("login-status");
+        login_status.classList.remove("hidden");
     </script>
 {% endblock %}

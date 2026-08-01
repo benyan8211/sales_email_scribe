@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css_files %}
+    <link rel="stylesheet" href="{% static 'accounts/css/signup.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="signup_container">
+    <h2>Create Account</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {% if form.email.errors %}
+            <div style="color: red; margin-bottom: 15px; font-weight: bold;">
+                {{ form.email.errors }}
+            </div>
+        {% endif %}
+        {{ form.as_p }}
+        <button type="submit">Sign Up</button>
+    </form>
+    <p>Already have an account? <a href="{% url 'login' %}">Log in here</a></p>
+</div>
+<script>
+    const login_status = document.getElementById("login-status");
+    login_status.classList.add("hidden");
+</script>
+{% endblock %}

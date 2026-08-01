@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+import dj_database_url
 
 # Only loads locally if the file exists; does nothing on Render
 if os.path.exists(".env"):
@@ -38,6 +39,7 @@ ALLOWED_HOSTS = ['sales-email-scribe.onrender.com']
 
 INSTALLED_APPS = [
     'scribe_prompt',
+    'accounts',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -83,10 +85,10 @@ WSGI_APPLICATION = 'sales_email_scribe.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL'),
+        conn_max_age=600
+    )
 }
 
 
@@ -141,3 +143,16 @@ STORAGES = {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
+
+# Base email configuration using standard Django backend
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+# Secure credential sourcing via environment variables
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')  # Your full Gmail address
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')  # Your 16-digit App Password
+
+# Default sender address for your outgoing emails
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

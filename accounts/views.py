@@ -77,7 +77,7 @@ def login_view(request):
                 return HttpResponseRedirect("/")
     else:
         form = AuthenticationForm()
-        form.fields['username'].label = "Email Address"
+        form.fields['username'].label = "Email"
 
     return render(request, 'accounts/login.html', {'form': form})
 

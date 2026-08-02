@@ -4,7 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
 
 class SignUpForm(UserCreationForm):
-    email = forms.EmailField(required=True, label="Email Address")
+    email = forms.EmailField(required=True, label="Email")
 
     class Meta:
         model = User
@@ -13,9 +13,9 @@ class SignUpForm(UserCreationForm):
     def clean_email(self):
         email = self.cleaned_data.get("email")
         
-        # Check if any user already has this email address in the database
+        # Check if any user already has this email in the database
         if User.objects.filter(email=email).exists():
-            raise ValidationError("A user with this email address already exists.")
+            raise ValidationError("A user with this email already exists.")
             
         return email
 

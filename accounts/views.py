@@ -32,9 +32,6 @@ def signup_view(request):
                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                 'token': account_activation_token.make_token(user),
             })
-
-            print(settings.EMAIL_HOST_USER)
-            print([user.email])
             
             # Send the email message
             send_mail(
@@ -73,7 +70,6 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                print("LOGIN SUCCESS!")
                 return HttpResponseRedirect("/")
     else:
         form = AuthenticationForm()

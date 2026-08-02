@@ -83,8 +83,6 @@ def slow_processing_view(request):
     Add a line break. Then include the html content within the body tag.
     """
 
-    print(system_prompt)
-
     sales_email = async_to_sync(execute_sales_agent)(system_prompt)
 
     return HttpResponse(f"""

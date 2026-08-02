@@ -78,8 +78,6 @@
 
             // 2. Gather the form data, automatically including the CSRF token
             const formData = new FormData(this);
-            console.log(this);
-            console.log(Object.fromEntries(formData));
 
             // 3. Send the asynchronous request to Django
             fetch('/submit-form-view', {
@@ -91,7 +89,6 @@
             })
             .then(response => response.json()) // Parse the JSON response from the server
             .then(data => {
-                console.log(data);
                 if (!data.success) {
                     // Handle validation errors
                     if (data.errors) {

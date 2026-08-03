@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.utils.safestring import mark_safe
 
-from .forms import IntakeForm
+from .forms import IntakeForm, AIFeedbackForm
 from dotenv import load_dotenv
 from agents import Agent, Runner, trace
 from asgiref.sync import async_to_sync
@@ -61,7 +61,8 @@ def submit_form_view(request):
 
 @login_required(login_url='/accounts/login/')
 def review_and_feedback(request):
-    return render(request, 'scribe_prompt/review_and_feedback.html', { 'current_step': 2})
+    form = AIFeedbackForm()
+    return render(request, 'scribe_prompt/review_and_feedback.html', { 'current_step': 2, form: form})
 
 def slow_processing_view(request):
     async def execute_sales_agent(system_prompt):

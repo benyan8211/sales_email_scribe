@@ -9,7 +9,7 @@ class IntakeForm(forms.Form):
         error_messages={"required": "Your company's product/service name cannot be blank."})
     
     product_details = forms.CharField(label="""Please tell us more about what your product does or about the service that you provide. 
-        Please be detailed and concise.""", widget=forms.Textarea, max_length=2000, 
+        Please be specific.""", widget=forms.Textarea, max_length=2000, 
         help_text="Maximum 2000 characters.", 
         error_messages={"required": "Your company's product/service description cannot be blank."})
 
@@ -27,4 +27,12 @@ class IntakeForm(forms.Form):
         error_messages={"required": "You must select an option."}
     )
 
+    required_css_class = 'required' 
+
+class AIFeedbackForm(forms.Form):
+    product_details = forms.CharField(label="""Please give the AI feedback on how it can improve the email. Please be specific.""", 
+        widget=forms.Textarea, max_length=2000, 
+        help_text="Maximum 2000 characters.", 
+        error_messages={"required": "AI feedback is required"})
+    
     required_css_class = 'required' 

@@ -1,31 +1,9 @@
-.spinner {
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    animation: spin 1s linear infinite;
-    margin: 20px auto;
-    background: conic-gradient(from 0deg, #2b6cb0, #319795, #d69e2e, #dd6b20);
-    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #fff 0);
-    mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #fff 0);
-    animation: spin 1s linear infinite;
-}
-
-.loading_container {
-    margin-top: 70px;
-}
-
-.follow_up_questions_container {
-    text-align: center;
-    margin-top: 80px;
-    margin-bottom: 40px;
-}
-
-@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-.hidden { display: none; }
-
 .btn_container {
     display: inline-flex;
     gap: 50px;
     margin-right: 25px;
+}
+
+.submit_feedback_ai_btn_container {
+    justify-self: right;
 }

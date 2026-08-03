@@ -27,9 +27,28 @@
         <h2>We apologize for the inconvenience. How would you like to proceed?</h2>
         <span class="btn_container">
             <button id="edit-intake-form-btn">Edit my intake form</button>
-            <button>Provide AI with feedback to improve email</button>
+            <button id="give-ai-feedback-btn">Give AI feedback</button>
         </span>
     </div>
+
+    <form id="aiFeedbackForm" class="hidden" method="POST" novalidate>
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="form-control">
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.help_text %}
+                    <div class="help-text">
+                        {{ field.help_text }}
+                    </div>
+                {% endif %}
+                {{ field.errors }}
+            </div>
+        {% endfor %}
+        <div class="submit_feedback_ai_btn_container">
+            <button>Submit Feedback to AI</button>
+        </div>
+    </form>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
@@ -58,12 +77,25 @@
             window.location.href = '/confirmation';
         });
         document.getElementById('customer-not-satisfied-btn').addEventListener('click', function() {
+            const customer_not_satisfied_btn = document.getElementById("customer-not-satisfied-btn");
+            customer_not_satisfied_btn.disabled = true;
+            const customer_fully_satisified_btn = document.getElementById("customer-fully-satisfied-btn");
+            customer_fully_satisified_btn.disabled = true;
             const followUpQuestionsContainer2 = document.getElementById("follow-up-questions-container-2");
             followUpQuestionsContainer2.classList.remove("hidden");
             followUpQuestionsContainer2.scrollIntoView({ behavior: 'smooth' });
         });
         document.getElementById('edit-intake-form-btn').addEventListener('click', function() {
             window.location.href = '/intake-form?edit=true';
+        });
+        document.getElementById('give-ai-feedback-btn').addEventListener('click', function() {
+            const edit_intake_form_btn = document.getElementById("edit-intake-form-btn");
+            edit_intake_form_btn.disabled = true;
+            const give_ai_feedback_btn = document.getElementById("give-ai-feedback-btn");
+            give_ai_feedback_btn.disabled = true;
+            const ai_feedback_form = document.getElementById("aiFeedbackForm");
+            ai_feedback_form.classList.remove("hidden");
+            ai_feedback_form.scrollIntoView({ behavior: 'smooth' });
         });
     </script>
 {% endblock %}

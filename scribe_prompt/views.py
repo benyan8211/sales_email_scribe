@@ -1,4 +1,5 @@
 import os
+import re
 
 from django.conf import settings
 from django.shortcuts import render
@@ -106,8 +107,11 @@ def send_ai_generated_email_to_user(request):
             'ai_generated_sales_email': request.session['sales_email']
         })
 
-        safe_message = mark_safe(message)
-        safe_message = safe_message.replace('</body>', '')
+        clean_message = re.sub(r"<body([^>]*)>", r"<div\1 style='margin:0; padding:20px; background-color:#f6f6f6;'>", message, flags=re.IGNORECASE)
+        clean_message = re.sub(r"</body>", "</div>", clean_message, flags=re.IGNORECASE)
+        clean_message = clean_message.strip()
+
+        safe_message = mark_safe(clean_message)
 
         # Send the email message
         send_mail(

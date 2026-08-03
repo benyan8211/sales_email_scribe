@@ -1,0 +1,39 @@
+{% extends 'scribe_prompt/scribe_prompt_container.html' %}
+{% load static %}
+
+{% block sub_css_files %}
+    <link rel="stylesheet" href="{% static 'scribe_prompt/css/review_and_feedback.css' %}">
+{% endblock %}
+
+{% block subcontent %}
+    <!-- This shows up instantly -->
+    <div id="loading-container" class="loading_container">
+        <div class="spinner"></div>
+        <p style="text-align: center;">Your AI generated sales email is all set! Sending to you...</p>
+    </div>
+
+    <!-- The view will stream content directly into here -->
+    <div id="content-container" class="hidden">
+        <h1>Success!</h1>
+        <h3>Your AI generated sales email was sent to your email!</h3>
+        <br />
+        <h3>Have another sales email you would like to draft?</h3>
+        <button>Start new intake form</button>
+        <br />
+        <h3>How was your experience today?</h3>
+        <button>Give Feedback</button>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch("{% url 'send-ai-generated-email-to-user' %}")
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("loading-container").classList.add("hidden");
+                const content_container = docuemnt.getElementById("content-container");
+                content_container.classList.remove("hidden");
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+{% endblock %}

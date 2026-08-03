@@ -1,9 +1,11 @@
 import os
 
+from django.conf import settings
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail
 
 from .forms import IntakeForm
 from dotenv import load_dotenv
@@ -84,6 +86,7 @@ def slow_processing_view(request):
     """
 
     sales_email = async_to_sync(execute_sales_agent)(system_prompt)
+    request.session['sales_email'] = sales_email
 
     return HttpResponse(f"""
         {sales_email}
@@ -91,4 +94,32 @@ def slow_processing_view(request):
 
 @login_required(login_url='/accounts/login/')
 def confirmation(request):
-    pass
+    return render(request, 'scribe_prompt/confirmation.html', { 'current_step': 3})
+
+def send_ai_generated_email_to_user(request):
+    try: 
+        user = request.user
+        subject = '[Sales Email Scribe] Your Requested AI generated sales email'
+        message = render_to_string('scribe_prompt/ai_generated_email.html', {
+            'user': user,
+            'ai_generated_sales_email': request.session['sales_email']
+        })
+
+        # Send the email message
+        send_mail(
+            subject, 
+            message="Please use an HTML-compatible email client.", 
+            from_email=settings.EMAIL_HOST_USER, 
+            recipient_list=[user.email],
+            html_message=message,
+        )
+
+        return JsonResponse({
+            'success': True, 
+            'message': 'Form submitted successfully!'
+        })
+    except Exception as e:
+        return JsonResponse({
+            'success': False, 
+            'errors': e
+        }, status=400)

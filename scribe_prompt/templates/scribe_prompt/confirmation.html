@@ -30,7 +30,7 @@
             .then(response => response.json())
             .then(data => {
                 document.getElementById("loading-container").classList.add("hidden");
-                const content_container = docuemnt.getElementById("content-container");
+                const content_container = document.getElementById("content-container");
                 content_container.classList.remove("hidden");
             })
             .catch(error => console.error('Error:', error));

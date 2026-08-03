@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block sub_css_files %}
-    <link rel="stylesheet" href="{% static 'scribe_prompt/css/review_and_feedback.css' %}">
+    <link rel="stylesheet" href="{% static 'scribe_prompt/css/confirmation.css' %}">
 {% endblock %}
 
 {% block subcontent %}
@@ -13,15 +13,19 @@
     </div>
 
     <!-- The view will stream content directly into here -->
-    <div id="content-container" class="hidden">
-        <h1>Success!</h1>
+    <div id="content-container" class="content-container hidden">
+        <h1 class="success_message">Success!</h1>
         <h3>Your AI generated sales email was sent to your email!</h3>
         <br />
         <h3>Have another sales email you would like to draft?</h3>
-        <button>Start new intake form</button>
+        <div class="btn_container">
+            <button>Start new intake form</button>
+        </div>
         <br />
         <h3>How was your experience today?</h3>
-        <button>Give Feedback</button>
+        <div class="btn_container">
+            <button>Give Feedback</button>
+        </div>
     </div>
 
     <script>

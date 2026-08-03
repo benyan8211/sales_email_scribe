@@ -107,6 +107,7 @@ def send_ai_generated_email_to_user(request):
         })
 
         safe_message = mark_safe(message)
+        safe_message = safe_message.replace('</body>', '')
 
         # Send the email message
         send_mail(

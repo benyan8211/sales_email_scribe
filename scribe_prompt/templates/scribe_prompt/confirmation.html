@@ -19,7 +19,7 @@
         <br />
         <h3>Have another sales email you would like to draft?</h3>
         <div class="btn_container">
-            <button>Start new intake form</button>
+            <button id="start-new-intake-form-btn">Start new intake form</button>
         </div>
         <br />
         <h3>How was your experience today?</h3>
@@ -38,6 +38,10 @@
                 content_container.classList.remove("hidden");
             })
             .catch(error => console.error('Error:', error));
+        });
+
+        document.getElementById('start-new-intake-form-btn').addEventListener('click', function() {
+            window.location.href = '/intake-form';
         });
     </script>
 {% endblock %}

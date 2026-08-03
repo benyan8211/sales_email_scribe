@@ -107,11 +107,13 @@ def send_ai_generated_email_to_user(request):
             'ai_generated_sales_email': request.session['sales_email']
         })
 
-        clean_message = re.sub(r"<body([^>]*)>", r"<div\1 style='margin:0; padding:20px; background-color:#f6f6f6;'>", message, flags=re.IGNORECASE)
-        clean_message = re.sub(r"</body>", "</div>", clean_message, flags=re.IGNORECASE)
-        clean_message = clean_message.strip()
-
-        safe_message = mark_safe(clean_message)
+        clean_message = re.sub(
+            r"<body\b([^>]*)>", 
+            r"<div\1 style='margin:0; padding:20px; background-color:#f6f6f6;'>", 
+            message, 
+            flags=re.IGNORECASE | re.DOTALL
+        )        
+        clean_message = re.sub(r"</body>", "</div>", clean_message, flags=re.IGNORECASE | re.DOTALL).strip()
 
         # Send the email message
         send_mail(
@@ -119,7 +121,7 @@ def send_ai_generated_email_to_user(request):
             message="Please use an HTML-compatible email client.", 
             from_email=settings.EMAIL_HOST_USER, 
             recipient_list=[user.email],
-            html_message=safe_message,
+            html_message=clean_message,
         )
 
         return JsonResponse({

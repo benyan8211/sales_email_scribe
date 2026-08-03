@@ -75,7 +75,7 @@
 
         document.getElementById('customer-fully-satisfied-btn').addEventListener('click', function() {
             const customer_fully_satisified_btn = document.getElementById("customer-fully-satisfied-btn");
-            if (customer_fully_satisified_btn.hasAttribute('disabled')) {
+            if (customer_fully_satisified_btn && customer_fully_satisified_btn.hasAttribute('disabled')) {
                 e.preventDefault();
                 return;
             }
@@ -83,7 +83,7 @@
         });
         document.getElementById('customer-not-satisfied-btn').addEventListener('click', function() {
             const customer_not_satisfied_btn = document.getElementById("customer-not-satisfied-btn");
-            if (customer_not_satisfied_btn.hasAttribute('disabled')) {
+            if (customer_not_satisfied_btn && customer_not_satisfied_btn.hasAttribute('disabled')) {
                 e.preventDefault();
                 return;
             }
@@ -96,7 +96,7 @@
         });
         document.getElementById('edit-intake-form-btn').addEventListener('click', function() {
             const edit_intake_form_btn = document.getElementById("edit-intake-form-btn");
-            if (edit_intake_form_btn.hasAttribute('disabled')) {
+            if (edit_intake_form_btn && edit_intake_form_btn.hasAttribute('disabled')) {
                 e.preventDefault();
                 return;
             }
@@ -104,7 +104,7 @@
         });
         document.getElementById('give-ai-feedback-btn').addEventListener('click', function() {
             const give_ai_feedback_btn = document.getElementById("give-ai-feedback-btn");
-            if (give_ai_feedback_btn.hasAttribute('disabled')) {
+            if (give_ai_feedback_btn && give_ai_feedback_btn.hasAttribute('disabled')) {
                 e.preventDefault();
                 return;
             }

@@ -7,7 +7,6 @@ from django.http import HttpResponse, JsonResponse
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
-from django.utils.safestring import mark_safe
 
 from .forms import IntakeForm, AIFeedbackForm
 from dotenv import load_dotenv

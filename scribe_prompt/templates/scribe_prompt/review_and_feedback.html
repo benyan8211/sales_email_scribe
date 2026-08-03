@@ -74,10 +74,19 @@
         });
 
         document.getElementById('customer-fully-satisfied-btn').addEventListener('click', function() {
+            const customer_fully_satisified_btn = document.getElementById("customer-fully-satisfied-btn");
+            if (customer_fully_satisified_btn.hasAttribute('disabled')) {
+                e.preventDefault();
+                return;
+            }
             window.location.href = '/confirmation';
         });
         document.getElementById('customer-not-satisfied-btn').addEventListener('click', function() {
             const customer_not_satisfied_btn = document.getElementById("customer-not-satisfied-btn");
+            if (customer_not_satisfied_btn.hasAttribute('disabled')) {
+                e.preventDefault();
+                return;
+            }
             customer_not_satisfied_btn.disabled = true;
             const customer_fully_satisified_btn = document.getElementById("customer-fully-satisfied-btn");
             customer_fully_satisified_btn.disabled = true;
@@ -86,12 +95,21 @@
             followUpQuestionsContainer2.scrollIntoView({ behavior: 'smooth' });
         });
         document.getElementById('edit-intake-form-btn').addEventListener('click', function() {
+            const edit_intake_form_btn = document.getElementById("edit-intake-form-btn");
+            if (edit_intake_form_btn.hasAttribute('disabled')) {
+                e.preventDefault();
+                return;
+            }
             window.location.href = '/intake-form?edit=true';
         });
         document.getElementById('give-ai-feedback-btn').addEventListener('click', function() {
+            const give_ai_feedback_btn = document.getElementById("give-ai-feedback-btn");
+            if (give_ai_feedback_btn.hasAttribute('disabled')) {
+                e.preventDefault();
+                return;
+            }
             const edit_intake_form_btn = document.getElementById("edit-intake-form-btn");
             edit_intake_form_btn.disabled = true;
-            const give_ai_feedback_btn = document.getElementById("give-ai-feedback-btn");
             give_ai_feedback_btn.disabled = true;
             const ai_feedback_form = document.getElementById("aiFeedbackForm");
             ai_feedback_form.classList.remove("hidden");

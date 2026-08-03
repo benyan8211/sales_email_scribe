@@ -30,6 +30,12 @@ button:active {
     box-shadow: 0 0 0 4px rgba(38, 143, 255, 0.5); 
 }
 
+button[disabled] {
+    pointer-events: none; /* Stops all click events completely */
+    opacity: 0.5;         /* Greys it out visually */
+    cursor: not-allowed;  /* Shows a "no" symbol on hover */
+}
+
 .website_logo_section {
     justify-self: center;
 }

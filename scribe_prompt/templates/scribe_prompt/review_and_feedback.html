@@ -60,6 +60,7 @@
         document.getElementById('customer-not-satisfied-btn').addEventListener('click', function() {
             const followUpQuestionsContainer2 = document.getElementById("follow-up-questions-container-2");
             followUpQuestionsContainer2.classList.remove("hidden");
+            followUpQuestionsContainer2.scrollIntoView({ behavior: 'smooth' });
         });
         document.getElementById('edit-intake-form-btn').addEventListener('click', function() {
             window.location.href = '/intake-form';

@@ -30,10 +30,6 @@ class IntakeForm(forms.Form):
     required_css_class = 'required' 
 
 class AIFeedbackForm(forms.Form):
-    feedback_box = forms.CharField(label="""Please give the AI feedback on how it can improve the email. 
-        Please be specific.""", 
-        widget=forms.Textarea, max_length=2000, 
-        help_text="Maximum 2000 characters.", 
-        error_messages={"required": "AI feedback is required"})
+    feedback_box = forms.CharField(label="Please give the AI feedback on how it can improve the email. Please be specific.")
     
     required_css_class = 'required' 

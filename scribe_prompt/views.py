@@ -43,6 +43,8 @@ def submit_form_view(request):
             request.session['product_name'] = form.cleaned_data.get('product_name')
             request.session['product_details'] = form.cleaned_data.get('product_details')
             request.session['tone_of_email'] = form.cleaned_data.get('tone_of_email')
+
+            request.session['saved_form_data'] = request.POST
             # Return a JSON response instead of a full HTML template
             return JsonResponse({
                 'success': True, 

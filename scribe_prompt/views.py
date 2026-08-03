@@ -61,7 +61,7 @@ def submit_form_view(request):
 def review_and_feedback(request):
     form = AIFeedbackForm()
     print(form)
-    return render(request, 'scribe_prompt/review_and_feedback.html', { 'current_step': 2, form: form })
+    return render(request, 'scribe_prompt/review_and_feedback.html', { 'current_step': 2, 'form': form })
 
 def slow_processing_view(request):
     async def execute_sales_agent(system_prompt):

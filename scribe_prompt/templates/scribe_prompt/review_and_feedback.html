@@ -33,19 +33,7 @@
 
     <form id="aiFeedbackForm" class="hidden" method="POST" novalidate>
         {% csrf_token %}
-        {{ form }}
-        {% for field in form %}
-            <div class="form-control">
-                {{ field.label_tag }}
-                {{ field }}
-                {% if field.help_text %}
-                    <div class="help-text">
-                        {{ field.help_text }}
-                    </div>
-                {% endif %}
-                {{ field.errors }}
-            </div>
-        {% endfor %}
+        {{ form.as_p }}
         <div class="submit_feedback_ai_btn_container">
             <button>Submit Feedback to AI</button>
         </div>

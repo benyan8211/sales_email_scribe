@@ -33,6 +33,7 @@
 
     <form id="aiFeedbackForm" class="hidden" method="POST" novalidate>
         {% csrf_token %}
+        {{ form }}
         {% for field in form %}
             <div class="form-control">
                 {{ field.label_tag }}

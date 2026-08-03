@@ -6,6 +6,7 @@ from django.http import HttpResponse, JsonResponse
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
+from django.utils.safestring import mark_safe
 
 from .forms import IntakeForm
 from dotenv import load_dotenv
@@ -105,13 +106,15 @@ def send_ai_generated_email_to_user(request):
             'ai_generated_sales_email': request.session['sales_email']
         })
 
+        safe_message = mark_safe(message)
+
         # Send the email message
         send_mail(
             subject, 
             message="Please use an HTML-compatible email client.", 
             from_email=settings.EMAIL_HOST_USER, 
             recipient_list=[user.email],
-            html_message=message,
+            html_message=safe_message,
         )
 
         return JsonResponse({

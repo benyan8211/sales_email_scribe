@@ -115,6 +115,8 @@ def send_ai_generated_email_to_user(request):
         )        
         clean_message = re.sub(r"</body>", "</div>", clean_message, flags=re.IGNORECASE | re.DOTALL).strip()
 
+        print(clean_message)
+
         # Send the email message
         send_mail(
             subject, 

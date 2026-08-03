@@ -18,8 +18,16 @@
     <div id="follow-up-questions-container-1" class="hidden follow_up_questions_container">
         <h2>Are you fully satisfied with this AI generated sales email?</h2>
         <span class="btn_container">
-            <button>No</button>
+            <button id="customer-not-satisfied-btn">No</button>
             <button id="customer-fully-satisfied-btn">Yes</button>
+        </span>
+    </div>
+
+    <div id="follow-up-questions-container-2" class="hidden follow_up_questions_container">
+        <h2>We apologize for the inconvenience. How would you like to proceed?</h2>
+        <span class="btn_container">
+            <button id="edit-intake-form-btn">Edit my intake form</button>
+            <button>Provide AI with feedback to improve email</button>
         </span>
     </div>
 
@@ -48,6 +56,13 @@
 
         document.getElementById('customer-fully-satisfied-btn').addEventListener('click', function() {
             window.location.href = '/confirmation';
+        });
+        document.getElementById('customer-not-satisfied-btn').addEventListener('click', function() {
+            const followUpQuestionsContainer2 = document.getElementById("follow-up-questions-container-2");
+            followUpQuestionsContainer2.classList.remove("hidden");
+        });
+        document.getElementById('edit-intake-form-btn').addEventListener('click', function() {
+            window.location.href = '/intake-form';
         });
     </script>
 {% endblock %}

@@ -20,6 +20,7 @@
 
 .content-container {
     justify-self: center;
+    margin-bottom: 40px;
 }
 
 .success_message {

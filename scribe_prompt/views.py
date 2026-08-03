@@ -25,7 +25,13 @@ def starting_page(request):
 
 @login_required(login_url='/accounts/login/')
 def intake_form(request):
-    form = IntakeForm()
+    is_returning = request.GET.get('edit') == 'true'
+    
+    if is_returning and 'saved_form_data' in request.session:
+        # Prepopulate only if they clicked the back button
+        form = IntakeForm(request.session['saved_form_data'])
+    else:
+        form = IntakeForm()
     
     return render(request, 'scribe_prompt/intake_form.html', {'current_step': 1, 'form': form })
 

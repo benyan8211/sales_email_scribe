@@ -38,6 +38,7 @@ ALLOWED_HOSTS = ['sales-email-scribe.onrender.com']
 # Application definition
 
 INSTALLED_APPS = [
+    'django.forms',
     'scribe_prompt',
     'accounts',
     'django.contrib.admin',
@@ -46,7 +47,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.forms',
 ]
 
 MIDDLEWARE = [

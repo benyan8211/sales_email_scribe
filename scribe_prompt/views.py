@@ -73,7 +73,7 @@ def give_ai_feedback_view(request):
                 result = await Runner.run(sales_agent, "Write a sales email")
                 return result.final_output
     if request.method == 'POST':
-        form = IntakeForm(request.POST)
+        form = AIFeedbackForm(request.POST)
         if form.is_valid():            
             request.session['feedback_box'] = form.cleaned_data.get('feedback_box')
 

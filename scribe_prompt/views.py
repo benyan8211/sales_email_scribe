@@ -7,7 +7,7 @@ from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 
-from .forms import IntakeForm, AIFeedbackForm
+from .forms import IntakeForm, AIFeedbackForm, UserExperienceFeedbackForm
 from dotenv import load_dotenv
 from agents import Agent, Runner, trace
 from asgiref.sync import async_to_sync
@@ -161,7 +161,8 @@ def slow_processing_view(request):
 
 @login_required(login_url='/accounts/login/')
 def confirmation(request):
-    return render(request, 'scribe_prompt/confirmation.html', { 'current_step': 3})
+    form = UserExperienceFeedbackForm()
+    return render(request, 'scribe_prompt/confirmation.html', { 'current_step': 3, 'form': form })
 
 def send_ai_generated_email_to_user(request):
     try: 

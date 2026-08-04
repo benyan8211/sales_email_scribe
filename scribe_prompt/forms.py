@@ -36,3 +36,18 @@ class AIFeedbackForm(forms.Form):
         error_messages={"required": "AI feedback cannot be blank."})
     
     required_css_class = 'required' 
+
+class UserExperienceFeedbackForm(forms.Form):
+    rating = forms.ChoiceField(
+        choices=[(i, str(i)) for i in range(1, 6)],
+        widget=forms.RadioSelect(attrs={'class': 'star-rating'}),
+        label="How was your experience today?"
+    )
+
+    user_experience_feedback_box = forms.CharField(label="We'd love to hear your thoughts! Tell us how we did!", 
+        required=False,
+        widget=forms.Textarea, max_length=2000, 
+        help_text="Maximum 2000 characters.", 
+        error_messages={"required": "AI feedback cannot be blank."})
+
+    required_css_class = 'required' 

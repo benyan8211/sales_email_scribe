@@ -24,7 +24,30 @@
         <br />
         <h3 class="success_message">How was your experience today?</h3>
         <div class="btn_container">
-            <button>Give Feedback</button>
+            <button id="give-feedback-btn">Give Feedback</button>
+        </div>
+    </div>
+
+    <div id="user-experience-feedback-form" class="modal_overlay hidden">
+        <div class="modal_content">
+            <span class="close_modal_btn">&times;</span>
+            <h2>Give Feedback</h2>
+            <form method="POST" action="{% url 'your-view-name' %}">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="form-control">
+                        {{ field.label_tag }}
+                        {{ field }}
+                        {% if field.help_text %}
+                            <div class="help-text">
+                                {{ field.help_text }}
+                            </div>
+                        {% endif %}
+                        {{ field.errors }}
+                    </div>
+                {% endfor %}
+                <button id="submit-user-experience-feedback-btn" type="submit">Submit</button>
+            </form>
         </div>
     </div>
 
@@ -42,6 +65,24 @@
 
         document.getElementById('start-new-intake-form-btn').addEventListener('click', function() {
             window.location.href = '/intake-form';
+        });
+
+        document.getElementById('give-feedback-btn').addEventListener('click', function() {
+            const user_experience_feedback_form = document.getElementById('user-experience-feedback-form')
+                .classList.remove("hidden");
+        });
+
+        document.getElementById('submit-user-experience-feedback-btn').addEventListener('click', function() {
+            fetch("{% url 'user-experience-feedback' %}")
+            .then(response => {
+                    if (!response.ok) throw new Error("Server error");
+                    return response.text();
+            })
+            .then(data => {
+                location.reload();
+            })
+            const user_experience_feedback_form = document.getElementById('user-experience-feedback-form')
+                .classList.add("hidden");
         });
     </script>
 {% endblock %}

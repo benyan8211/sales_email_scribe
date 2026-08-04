@@ -79,7 +79,7 @@
                 e.preventDefault();
                 return;
             }
-            window.location.href = '/confirmation';
+            window.location.href = "{% url 'confirmation' %}";
         });
         document.getElementById('customer-not-satisfied-btn').addEventListener('click', function() {
             const customer_not_satisfied_btn = document.getElementById("customer-not-satisfied-btn");

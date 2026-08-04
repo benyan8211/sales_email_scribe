@@ -41,11 +41,12 @@ class StarWidget(forms.RadioSelect):
     template_name = 'widgets/star_rating.html'
 
     def optgroups(self, name, value, attrs=None):
-        # Reverse options so 5 star is first in DOM for CSS sibling selectors
+        # Safely copy and reverse the structure to prevent a crash
         groups = super().optgroups(name, value, attrs)
-        for group, options, index in groups:
-            options.reverse()
-        return options
+        for group in groups:
+            # group[1] contains the list of options
+            group[1].reverse()
+        return groups
 
 class StarRatingField(forms.ChoiceField):
     widget = StarWidget

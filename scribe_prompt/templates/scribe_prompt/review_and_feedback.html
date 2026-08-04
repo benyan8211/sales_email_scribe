@@ -52,6 +52,7 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById("loading-container").classList.remove("hidden");
             fetch("{% url 'slow-processing' %}")
             .then(response => {
                     if (!response.ok) throw new Error("Server error");

@@ -56,7 +56,6 @@
     justify-content: space-between;
     align-items: center;
     padding: 16px 20px;
-    border-bottom: 1px solid #e2e8f0;
 }
 
 .custom-modal-header h2 {
@@ -79,6 +78,7 @@
 
 .modal_form {
     margin: 0;
+    box-shadow: none !important;
 }
 
 .modal_body {
@@ -108,4 +108,27 @@
     outline: none;
     color: #2d3748;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.star-rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+}
+.star-rating input {
+    display: none; /* Hide the actual radio buttons */
+}
+.star-rating label {
+    font-size: 2rem;
+    color: #ccc;
+    cursor: pointer;
+}
+.star-rating label:before {
+    content: '★';
+}
+/* Change color to gold when checked or hovered */
+.star-rating input:checked ~ label,
+.star-rating input:hover ~ label,
+.star-rating label:hover ~ label {
+    color: #ffca08;
 }

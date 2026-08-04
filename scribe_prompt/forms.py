@@ -57,7 +57,7 @@ class StarRatingField(forms.ChoiceField):
 class UserExperienceFeedbackForm(forms.Form):
     rating = StarRatingField(label="How was your experience today?")
 
-    user_experience_feedback_box = forms.CharField(label="We'd love to hear your thoughts! Tell us how we did!", 
+    user_experience_feedback_box = forms.CharField(label="Let us know your thoughts below!", 
         required=False,
         widget=forms.Textarea, max_length=2000, 
         help_text="Maximum 2000 characters.", 

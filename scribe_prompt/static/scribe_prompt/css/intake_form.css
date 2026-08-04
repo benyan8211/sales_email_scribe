@@ -7,13 +7,6 @@
     justify-self: center;
 }
 
-.help-text {
-    font-family: "Google Sans Flex", sans-serif !important;
-    font-size: 0.85rem;
-    color: #6c757d;
-    display: block;       
-}
-
 .next_btn_container {
     justify-self: right;
 }

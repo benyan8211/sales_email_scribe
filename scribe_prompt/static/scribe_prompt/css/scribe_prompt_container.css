@@ -133,6 +133,13 @@ label.required::after {
     margin-bottom: 1rem;
 }
 
+.help-text {
+    font-family: "Google Sans Flex", sans-serif !important;
+    font-size: 0.85rem;
+    color: #6c757d;
+    display: block;       
+}
+
 .spinner {
     border-radius: 50%;
     width: 50px;

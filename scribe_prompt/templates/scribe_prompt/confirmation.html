@@ -32,7 +32,7 @@
         <div class="modal_content">
             <span class="close_modal_btn">&times;</span>
             <h2>Give Feedback</h2>
-            <form method="POST" action="{% url 'your-view-name' %}">
+            <form method="POST" novalidate>
                 {% csrf_token %}
                 {% for field in form %}
                     <div class="form-control">

@@ -3,27 +3,26 @@
     flex-direction: row-reverse;
     justify-content: flex-end;
     gap: 4px;
-}
+  }
   
-.star_rating input {
+  .star_rating input {
     display: none;
-}
+  }
   
-.star_rating .star {
+  .star_rating .star {
     font-size: 2rem;
     color: #ccc;
     cursor: pointer;
     transition: color 0.2s;
-}
+  }
   
-/* Hover effect: light up hovered star and all stars before it (to the right in DOM) */
-.star_rating .star_label:hover .star,
-.star_rating .star_label:hover ~ .star_label .star {
+  /* Hover: Light up hovered star label and all preceding labels (which follow it in the DOM) */
+  .star_rating .star_label:hover .star,
+  .star_rating .star_label:hover ~ .star_label .star {
     color: #ffc107;
-}
+  }
   
-/* Click/Checked effect: light up selected star and all stars before it */
-.star_rating input:checked ~ .star_label .star,
-.star_rating input:checked + .star {
+  /* Checked: Light up selected label and all preceding labels when input is checked */
+  .star_rating input:checked ~ .star_label .star {
     color: #ffc107;
-}
+  }

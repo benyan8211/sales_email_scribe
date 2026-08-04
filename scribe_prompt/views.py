@@ -23,6 +23,9 @@ def starting_page(request):
 
 @login_required(login_url='/accounts/login/')
 def intake_form(request):
+    if 'sales_email' in request.session:
+        del request.session['sales_email']
+
     is_returning = request.GET.get('edit') == 'true'
     
     if is_returning and 'saved_form_data' in request.session:
@@ -62,6 +65,52 @@ def review_and_feedback(request):
     form = AIFeedbackForm()
     return render(request, 'scribe_prompt/review_and_feedback.html', { 'current_step': 2, 'form': form })
 
+def give_ai_feedback_view(request):
+    async def execute_sales_agent(system_prompt):
+            sales_agent = Agent(name="Sales Agent", instructions=system_prompt, model="gpt-5.4")
+            # The 'trace' context customizes metadata visible on your OpenAI Dashboard
+            with trace("Write a sales email"):
+                result = await Runner.run(sales_agent, "Write a sales email")
+                return result.final_output
+    if request.method == 'POST':
+        form = IntakeForm(request.POST)
+        if form.is_valid():            
+            request.session['feedback_box'] = form.cleaned_data.get('feedback_box')
+
+            company_name = request.session['company_name']
+            product_name = request.session['product_name']
+            sales_email = request.session['sales_email']
+            system_prompt = f"""You are a sales agent working for {company_name}, a company that is trying to sell {product_name}. 
+    
+            Here is a sales email that you previously wrote:
+            {sales_email}
+
+            The user wants you to write a new email. This new email should improve upon that previously written email by taking 
+            into account the following feedback:
+            {request.session['feedback_box']}
+
+            Be sure to return your response in html. Make the email look aesthetically pleasing. Include the email's subject in a div that is center aligned.
+            Add a line break. Then include the html content within the body tag.
+            """
+
+            sales_email = async_to_sync(execute_sales_agent)(system_prompt)
+
+            request.session['sales_email'] = sales_email
+
+            # Return a JSON response instead of a full HTML template
+            return JsonResponse({
+                'success': True, 
+                'message': sales_email
+            })
+        else:
+            # Return form validation errors to the JavaScript front-end
+            return JsonResponse({
+                'success': False, 
+                'errors': form.errors.get_json_data() 
+            }, status=400)
+            
+    return JsonResponse({'success': False, 'errors': 'Invalid request method'}, status=405)
+
 def slow_processing_view(request):
     async def execute_sales_agent(system_prompt):
             sales_agent = Agent(name="Sales Agent", instructions=system_prompt, model="gpt-5.4")
@@ -70,6 +119,10 @@ def slow_processing_view(request):
                 result = await Runner.run(sales_agent, "Write a sales email")
                 return result.final_output
 
+    if 'sales_email' in request.session:
+        return HttpResponse(f"""
+            {request.session['sales_email']}
+        """)
     company_name = request.session['company_name']
     product_name = request.session['product_name']
     product_details = request.session['product_details']

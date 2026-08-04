@@ -115,5 +115,37 @@
             ai_feedback_form.classList.remove("hidden");
             ai_feedback_form.scrollIntoView({ behavior: 'smooth' });
         });
+        document.getElementById('aiFeedbackForm').addEventListener('submit', function(event) {
+            // 1. Stop the browser from performing a full page reload
+            event.preventDefault();
+
+            // 2. Gather the form data, automatically including the CSRF token
+            const formData = new FormData(this);
+
+            // 3. Send the asynchronous request to Django
+            fetch('/give-ai-feedback-view', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest' 
+                }
+            })
+            .then(response => response.json()) // Parse the JSON response from the server
+            .then(data => {
+                if (!data.success) {
+                    // Handle validation errors
+                    if (data.errors) {
+                        displayFormErrors(data.errors);
+                    }
+                    throw new Error('Form validation failed.');
+                } else {
+                    window.location.href = "/review-and-feedback"; 
+                    return data;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
     </script>
 {% endblock %}

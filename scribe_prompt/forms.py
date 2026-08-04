@@ -37,12 +37,24 @@ class AIFeedbackForm(forms.Form):
     
     required_css_class = 'required' 
 
+class StarWidget(forms.RadioSelect):
+    template_name = 'widgets/star_rating.html'
+
+    def optgroups(self, name, value, attrs=None):
+        # Reverse options so 5 star is first in DOM for CSS sibling selectors
+        groups = super().optgroups(name, value, attrs)
+        for group, options, index in groups:
+            options.reverse()
+        return options
+
+class StarRatingField(forms.ChoiceField):
+    widget = StarWidget
+    def __init__(self, *args, **kwargs):
+        kwargs['choices'] = [(i, str(i)) for i in range(5, 0, -1)]
+        super().__init__(*args, **kwargs)
+
 class UserExperienceFeedbackForm(forms.Form):
-    rating = forms.ChoiceField(
-        choices=[(i, str(i)) for i in range(1, 6)],
-        widget=forms.RadioSelect(attrs={'class': 'star-rating'}),
-        label="How was your experience today?"
-    )
+    rating = StarRatingField(label="How was your experience today?")
 
     user_experience_feedback_box = forms.CharField(label="We'd love to hear your thoughts! Tell us how we did!", 
         required=False,

@@ -1,0 +1,14 @@
+{% load static %}
+<!-- Link to your rating stylesheet -->
+<link rel="stylesheet" href="{% static 'widgets/css/star_rating.css' %}">
+
+<div class="star_rating">
+    {% for group, options, index in widget.optgroups %}
+      {% for option in options %}
+        <label class="star_label">
+          <input type="{{ option.type }}" name="{{ option.name }}" value="{{ option.value }}" {% if option.selected %}checked{% endif %}>
+          <span class="star">&#9733;</span>
+        </label>
+      {% endfor %}
+    {% endfor %}
+</div>

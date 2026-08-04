@@ -125,6 +125,12 @@
             // 1. Stop the browser from performing a full page reload
             event.preventDefault();
 
+            document.getElementById("content-container").classList.add("hidden");
+            document.getElementById("follow-up-questions-container-1").classList.add("hidden");
+            document.getElementById("follow-up-questions-container-2").classList.add("hidden");
+            document.getElementById('aiFeedbackForm').classList.add("hidden");
+            document.getElementById("loading-container").classList.remove("hidden");
+
             // 2. Gather the form data, automatically including the CSRF token
             const formData = new FormData(this);
 
@@ -145,7 +151,7 @@
                     }
                     throw new Error('Form validation failed.');
                 } else {
-                    window.location.reload();
+                    location.reload();
                 }
             })
             .catch(error => {

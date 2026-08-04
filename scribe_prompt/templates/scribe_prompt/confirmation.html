@@ -68,21 +68,11 @@
         });
 
         document.getElementById('give-feedback-btn').addEventListener('click', function() {
-            const user_experience_feedback_form = document.getElementById('user-experience-feedback-form')
-                .classList.remove("hidden");
+            document.getElementById('user-experience-feedback-form').classList.remove("hidden");
         });
 
         document.getElementById('submit-user-experience-feedback-btn').addEventListener('click', function() {
-            fetch("{% url 'user-experience-feedback' %}")
-            .then(response => {
-                    if (!response.ok) throw new Error("Server error");
-                    return response.text();
-            })
-            .then(data => {
-                location.reload();
-            })
-            const user_experience_feedback_form = document.getElementById('user-experience-feedback-form')
-                .classList.add("hidden");
+            document.getElementById('user-experience-feedback-form').classList.add("hidden");
         });
     </script>
 {% endblock %}

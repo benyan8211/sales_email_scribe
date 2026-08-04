@@ -113,6 +113,8 @@
             give_ai_feedback_btn.disabled = true;
             const ai_feedback_form = document.getElementById("aiFeedbackForm");
             ai_feedback_form.classList.remove("hidden");
+            const ai_feedback_form_label = document.querySelector('[for="id_feedback_box"]');
+            ai_feedback_form_label.style.whiteSpace = 'nowrap';
             ai_feedback_form.scrollIntoView({ behavior: 'smooth' });
         });
         document.getElementById('aiFeedbackForm').addEventListener('submit', function(event) {

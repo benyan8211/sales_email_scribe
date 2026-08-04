@@ -118,7 +118,6 @@ form.logout-form {
     font-weight: bold;
     display: block;
     margin-bottom: 0.5rem;
-    white-space: nowrap;
 }
 
 label.required::after {

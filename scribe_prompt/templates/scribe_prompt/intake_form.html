@@ -44,34 +44,6 @@
         </form>
     </section>
     <script>
-        function displayFormErrors(errors) {
-            // 1. Instantly find and remove all old error elements from the page
-            document.querySelectorAll('.field_error').forEach(el => el.remove());
-
-            // 2. Loop through the new errors sent by Django
-            for (const [fieldName, errorList] of Object.entries(errors)) {
-                // Find the input element by its HTML "name" attribute
-                let inputField = document.querySelector(`[name="${fieldName}"]`);
-
-                
-                if (inputField) {
-                    // Django's get_json_data() nests the message inside an array of objects
-                    const errorMessageText = errorList[0].message; 
-
-                    // Create a new text element for the error
-                    const errorElement = document.createElement('small');
-                    errorElement.className = 'field_error'; // Matches the selector above
-                    errorElement.innerText = errorMessageText;
-
-                    if (fieldName === "tone_of_email") {
-                        inputField.parentNode.parentNode.after(errorElement);
-                    } else {
-                        // Insert the error directly below the incorrect input field
-                        inputField.parentNode.after(errorElement);
-                    }
-                }
-            }
-        }
         document.getElementById('myForm').addEventListener('submit', function(event) {
             // 1. Stop the browser from performing a full page reload
             event.preventDefault();

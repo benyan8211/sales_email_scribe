@@ -139,18 +139,17 @@
                     }
                     throw new Error('Form validation failed.');
                 } else {
+                    document.getElementById("content-container").classList.add("hidden");
+                    document.getElementById("follow-up-questions-container-1").classList.add("hidden");
+                    document.getElementById("follow-up-questions-container-2").classList.add("hidden");
+                    document.getElementById('aiFeedbackForm').classList.add("hidden");
+                    document.getElementById("loading-container").classList.remove("hidden");
                     fetch("{% url 'slow-processing-with-feedback' %}")
                     .then(response => {
                             if (!response.ok) throw new Error("Server error");
                             return response.text();
                     })
                     .then(data => {
-                        document.getElementById("content-container").classList.add("hidden");
-                        document.getElementById("follow-up-questions-container-1").classList.add("hidden");
-                        document.getElementById("follow-up-questions-container-2").classList.add("hidden");
-                        document.getElementById('aiFeedbackForm').classList.add("hidden");
-                        document.getElementById("loading-container").classList.remove("hidden");
-
                         location.reload();
                     })
                 }

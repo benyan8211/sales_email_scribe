@@ -28,7 +28,7 @@
         </div>
     </div>
 
-    <div id="user-experience-feedback-form-container" class="modal_overlay hidden">
+    <div id="user-experience-feedback-form-container" class="modal_overlay">
         <div class="modal_content_container">
             <div class="modal_header">
                 <h2>Give Feedback</h2>
@@ -72,11 +72,11 @@
         });
 
         document.getElementById('give-feedback-btn').addEventListener('click', function() {
-            document.getElementById('user-experience-feedback-form-container').classList.remove("hidden");
+            document.getElementById('user-experience-feedback-form-container').classList.add("active");
         });
 
         document.getElementById('submit-user-experience-feedback-btn').addEventListener('click', function() {
-            document.getElementById('user-experience-feedback-form-container').classList.add("hidden");
+            document.getElementById('user-experience-feedback-form-container').classList.remove("active");
         });
     </script>
 {% endblock %}

@@ -52,30 +52,24 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            document.getElementById("loading-container").classList.remove("hidden");
-
-            requestAnimationFrame(() => {
-                setTimeout(() => {
-                    fetch("{% url 'slow-processing' %}")
-                    .then(response => {
-                            if (!response.ok) throw new Error("Server error");
-                            return response.text();
-                    })
-                    .then(pythonHtmlResult => {
-                        const outputDiv = document.getElementById("content-container");
-                        const followUpQuestionsContainer1 = document.getElementById("follow-up-questions-container-1");
-                        
-                        outputDiv.innerHTML += pythonHtmlResult;
-                        
-                        document.getElementById("loading-container").classList.add("hidden");
-                        outputDiv.classList.remove("hidden");
-                        followUpQuestionsContainer1.classList.remove("hidden");
-                    })
-                    .catch(error => {
-                        console.error(error);
-                        document.getElementById("loading-screen").innerHTML = "<p style='color:red; text-align:center;'>Python execution failed.</p>";
-                    });
-                }, 0);
+            fetch("{% url 'slow-processing' %}")
+            .then(response => {
+                    if (!response.ok) throw new Error("Server error");
+                    return response.text();
+            })
+            .then(pythonHtmlResult => {
+                const outputDiv = document.getElementById("content-container");
+                const followUpQuestionsContainer1 = document.getElementById("follow-up-questions-container-1");
+                
+                outputDiv.innerHTML += pythonHtmlResult;
+                
+                document.getElementById("loading-container").classList.add("hidden");
+                outputDiv.classList.remove("hidden");
+                followUpQuestionsContainer1.classList.remove("hidden");
+            })
+            .catch(error => {
+                console.error(error);
+                document.getElementById("loading-screen").innerHTML = "<p style='color:red; text-align:center;'>Python execution failed.</p>";
             });
         });
 

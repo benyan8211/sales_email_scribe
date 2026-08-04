@@ -28,25 +28,29 @@
         </div>
     </div>
 
-    <div id="user-experience-feedback-form" class="modal_overlay hidden">
-        <div class="modal_content">
-            <span class="close_modal_btn">&times;</span>
-            <h2>Give Feedback</h2>
-            <form method="POST" novalidate>
+    <div id="user-experience-feedback-form-container" class="modal_overlay hidden">
+        <div class="modal_content_container">
+            <div class="modal_header">
+                <h2>Give Feedback</h2>
+                <button id="close-modal-btn" class="close_modal_btn" type="button">&times;</button>
+            </div>
+            <form method="POST" novalidate class="modal_form">
                 {% csrf_token %}
-                {% for field in form %}
-                    <div class="form-control">
-                        {{ field.label_tag }}
-                        {{ field }}
-                        {% if field.help_text %}
-                            <div class="help-text">
-                                {{ field.help_text }}
-                            </div>
-                        {% endif %}
-                        {{ field.errors }}
-                    </div>
-                {% endfor %}
-                <button id="submit-user-experience-feedback-btn" type="submit">Submit</button>
+                <div class="modal_body">
+                    {% for field in form %}
+                        <div class="form_group">
+                            {{ field.label_tag }}
+                            {{ field }}
+                            {% if field.help_text %}
+                                <div class="help-text">
+                                    {{ field.help_text }}
+                                </div>
+                            {% endif %}
+                            {{ field.errors }}
+                        </div>
+                    {% endfor %}
+                    <button id="submit-user-experience-feedback-btn" type="submit">Submit</button>
+                </div>
             </form>
         </div>
     </div>
@@ -68,11 +72,11 @@
         });
 
         document.getElementById('give-feedback-btn').addEventListener('click', function() {
-            document.getElementById('user-experience-feedback-form').classList.remove("hidden");
+            document.getElementById('user-experience-feedback-form-container').classList.remove("hidden");
         });
 
         document.getElementById('submit-user-experience-feedback-btn').addEventListener('click', function() {
-            document.getElementById('user-experience-feedback-form').classList.add("hidden");
+            document.getElementById('user-experience-feedback-form-container').classList.add("hidden");
         });
     </script>
 {% endblock %}

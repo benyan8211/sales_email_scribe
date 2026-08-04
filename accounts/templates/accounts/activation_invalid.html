@@ -1,8 +1,12 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block css_files %}
+    <link rel="stylesheet" href="{% static 'accounts/css/activation_invalid.css' %}">
+{% endblock %}
+
 {% block content %}
-<div>
+<div class="content_container">
     <h2>Activation Link Invalid</h2>
     <br/>
     <br />

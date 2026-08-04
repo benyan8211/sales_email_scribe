@@ -1,10 +1,14 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block css_files %}
+    <link rel="stylesheet" href="{% static 'accounts/css/activation_sent.css' %}">
+{% endblock %}
+
 {% block content %}
 <div>
-    <h2>Check Your Email</h2>
-    <p>We have sent a verification link to your email. Please click it to complete registration.</p>
+    <h2 class="center_align_tag">Check Your Email</h2>
+    <p class="center_align_tag">We have sent a verification link to your email. Please click it to complete registration.</p>
 </div>
 <script>
     const login_status = document.getElementById("login-status");

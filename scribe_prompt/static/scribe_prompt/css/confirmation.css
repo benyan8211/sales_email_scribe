@@ -110,25 +110,6 @@
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.star-rating {
-    display: flex;
-    flex-direction: row-reverse;
-    justify-content: flex-end;
-}
-.star-rating input {
-    display: none; /* Hide the actual radio buttons */
-}
-.star-rating label {
-    font-size: 2rem;
-    color: #ccc;
-    cursor: pointer;
-}
-.star-rating label:before {
-    content: '★';
-}
-/* Change color to gold when checked or hovered */
-.star-rating input:checked ~ label,
-.star-rating input:hover ~ label,
-.star-rating label:hover ~ label {
-    color: #ffca08;
+.submit_user_feedback_btn_container {
+    justify-self: right;
 }

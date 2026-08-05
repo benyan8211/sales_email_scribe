@@ -4,13 +4,12 @@ from django.shortcuts import render, redirect
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import AuthenticationForm
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
-from .forms import SignUpForm
+from .forms import SignUpForm, LoginForm
 from .tokens import account_activation_token
 
 def signup_view(request):
@@ -62,7 +61,8 @@ def activate_view(request, uidb64, token):
 
 def login_view(request):
     if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
+        form = LoginForm(request, data=request.POST)
+        form.fields['username'].label = "Email"
         if form.is_valid():
             # The user enters an email, but Django processes it in the username field
             username = form.cleaned_data.get('username')
@@ -72,7 +72,7 @@ def login_view(request):
                 login(request, user)
                 return HttpResponseRedirect("/")
     else:
-        form = AuthenticationForm()
+        form = LoginForm()
         form.fields['username'].label = "Email"
 
     return render(request, 'accounts/login.html', {'form': form})

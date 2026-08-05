@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm
 from django.core.exceptions import ValidationError
 
 class SignUpForm(UserCreationForm):
@@ -31,3 +32,8 @@ class SignUpForm(UserCreationForm):
         if commit:
             user.save()
         return user
+
+class LoginForm(AuthenticationForm):
+    error_messages = {
+        'invalid_login': "Invalid email and/or password.",
+    }

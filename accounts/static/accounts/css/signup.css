@@ -3,6 +3,13 @@
     margin-left: 335px;
 }
 
+.signup_container input[type="email"], 
+.signup_container input[type="password"] {
+    width: 100%;
+    max-width: 450px;
+    padding: 10px;
+}
+
 .hidden {
     display: none;
 }

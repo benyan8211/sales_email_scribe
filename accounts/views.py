@@ -1,6 +1,9 @@
+import requests
+
 from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -14,33 +17,52 @@ from .tokens import account_activation_token
 
 def signup_view(request):
     if request.method == 'POST':
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.is_active = False  # Deactivate account until email verification
-            user.save()
-            
-            # Gather domain details to construct the verification URL
-            current_site = get_current_site(request)
-            subject = '[Sales Email Scribe] Activate Your Account'
-            
-            # Render the email text body from a template
-            message = render_to_string('accounts/activation_email.html', {
-                'user': user,
-                'domain': current_site.domain,
-                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                'token': account_activation_token.make_token(user),
-            })
-            
-            # Send the email message
-            send_mail(
-                subject, 
-                message="Please use an HTML-compatible email client.", 
-                from_email=settings.EMAIL_HOST_USER, 
-                recipient_list=[user.email],
-                html_message=message,
-            )
-            return render(request, 'accounts/activation_sent.html')
+        try:
+            form = SignUpForm(request.POST)
+            if form.is_valid():
+                mock_response = requests.Response()
+                mock_response.status_code = 500  # Simulate an Internal Server Error
+                mock_response.url = "https://example.com"
+                
+                # 2. Force throw the HTTPError with your mock response
+                raise requests.exceptions.HTTPError("Simulated 500 Server Error", response=mock_response)
+                # user = form.save(commit=False)
+                # user.is_active = False  # Deactivate account until email verification
+                # user.save()
+                
+                # # Gather domain details to construct the verification URL
+                # current_site = get_current_site(request)
+                # subject = '[Sales Email Scribe] Activate Your Account'
+                
+                # # Render the email text body from a template
+                # message = render_to_string('accounts/activation_email.html', {
+                #     'user': user,
+                #     'domain': current_site.domain,
+                #     'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                #     'token': account_activation_token.make_token(user),
+                # })
+                
+                # # Send the email message
+                # send_mail(
+                #     subject, 
+                #     message="Please use an HTML-compatible email client.", 
+                #     from_email=settings.EMAIL_HOST_USER, 
+                #     recipient_list=[user.email],
+                #     html_message=message,
+                # )
+                # return render(request, 'accounts/activation_sent.html')
+        except requests.exceptions.HTTPError:
+        # Handles 404, 500, etc.
+            messages.error(request, f"HTTP Request Failed! Please try again later.")
+        except requests.exceptions.ConnectionError:
+            # Handles network down, DNS failures
+            messages.error(request, "Failed to establish a connection to the server! Plase check your internet connection and try again.")
+        except requests.exceptions.Timeout:
+            # Handles slow/stalled API servers
+            messages.error(request, "The server is taking too long to respond. Please try again later.")
+        except requests.exceptions.RequestException as err:
+            # Fallback catch-all for any requests-related error
+            messages.error(request, "An unexpected error occurred! Please try again later.") 
     else:
         form = SignUpForm()
     return render(request, 'accounts/signup.html', {'form': form})

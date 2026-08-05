@@ -56,3 +56,31 @@ button[disabled] {
     box-shadow: none;
     display: inline;
 }
+
+/* Base style for every message notification */
+.alert-box {
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    font-weight: 500;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Contextual color overrides based on Django tags */
+.alert-error {
+    background-color: #fde8e8;
+    color: #9b1c1c;
+    border: 1px solid #f8b4b4;
+}
+
+/* Native close button styling */
+.alert-close-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: inherit;
+    line-height: 1;
+}

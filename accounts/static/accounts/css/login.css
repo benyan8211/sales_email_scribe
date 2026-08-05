@@ -3,6 +3,10 @@
 
 }
 
+.login_container label {
+    margin-right: 10px;
+}
+
 .login_container input[type="text"], 
 .login_container input[type="password"] {
     width: 100%;
@@ -12,6 +16,7 @@
 
 .login_form_field_container {
     margin-bottom: 25px;
+    white-space: nowrap;
 }
 
 .hidden {

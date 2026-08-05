@@ -78,13 +78,13 @@ def activate_view(request, uidb64, token):
 def login_view(request):
     if request.method == 'POST':
         try:
+            form = LoginForm(request, data=request.POST)
             # Simulate a fake response object
             fake_response = requests.Response()
-            fake_response.status_code = 500
+            fake_response.status_code = 404
             
             # Raise the HTTPError explicitly
-            raise requests.exceptions.HTTPError("500 Internal Server Error", response=fake_response)
-            # form = LoginForm(request, data=request.POST)
+            raise requests.exceptions.HTTPError("500 Internal Server", response=fake_response)
             # form.fields['username'].label = "Email"
             # if form.is_valid():
             #     # The user enters an email, but Django processes it in the username field

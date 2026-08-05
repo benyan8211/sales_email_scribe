@@ -2,6 +2,13 @@
     justify-self: center;
 }
 
+.login_container input[type="text"], 
+.login_container input[type="password"] {
+    width: 100%;
+    max-width: 450px;
+    padding: 10px;
+}
+
 .hidden {
     display: none;
 }

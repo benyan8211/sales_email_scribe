@@ -11,7 +11,7 @@
         {% for message in messages %}
             <!-- Filter specifically for 'error' tags -->
             {% if message.tags == 'error' %}
-                <div class="alert-box alert-error">
+                <div class="alert-box alert-error" style="width: 400px;">
                     <span>{{ message }}</span>
                     <button class="alert-close-btn" onclick="this.parentElement.remove();">&times;</button>
                 </div>

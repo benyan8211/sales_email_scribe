@@ -17,7 +17,7 @@
         {% endif %}
         {% for field in form %}
                 <div class="form-control">
-                    {{ field.label_tag }}: {{ field }}
+                    <p><span>{{ field.label }}:</span> {{ error }}</p>
                     {% if field.help_text %}
                         <div class="help-text">
                             {{ field.help_text }}

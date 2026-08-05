@@ -1,5 +1,6 @@
 .login_container {
     justify-self: center;
+
 }
 
 .login_container input[type="text"], 
@@ -7,6 +8,10 @@
     width: 100%;
     max-width: 240px;
     padding: 10px;
+}
+
+.login_form_field_container {
+    margin-bottom: 25px;
 }
 
 .hidden {

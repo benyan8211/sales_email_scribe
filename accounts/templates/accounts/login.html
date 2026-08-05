@@ -10,7 +10,21 @@
     <h2>Account Login</h2>
     <form method="POST">
         {% csrf_token %}
-        {{ form.as_p }}
+        {% if form.email.errors %}
+            <div style="color: red; margin-bottom: 15px; font-weight: bold;">
+                {{ form.email.errors }}
+            </div>
+        {% endif %}
+        {% for field in form %}
+            <div class="login_form_field_container">
+                {{ field.label_tag }} {{ field }}
+                {% if field.help_text %}
+                    <div>
+                        {{ field.help_text }}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
         <button type="submit">Log In</button>
     </form>
     <p>New user? <a href="{% url 'signup' %}">Create an account</a></p>

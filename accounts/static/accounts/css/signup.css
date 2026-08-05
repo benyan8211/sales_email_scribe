@@ -3,6 +3,10 @@
     margin-left: 335px;
 }
 
+.signup_container label {
+    margin-right: 10px;
+}
+
 .signup_container input[type="email"], 
 .signup_container input[type="password"] {
     width: 100%;

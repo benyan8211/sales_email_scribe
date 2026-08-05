@@ -34,7 +34,7 @@
                 <h2>Give Feedback</h2>
                 <button id="close-modal-btn" class="close_modal_btn" type="button">&times;</button>
             </div>
-            <form method="POST" novalidate class="modal_form">
+            <form id="giveFeedbackForm" method="POST" novalidate class="modal_form">
                 {% csrf_token %}
                 <div class="modal_body">
                     {% for field in form %}
@@ -54,6 +54,9 @@
                     </div>
                 </div>
             </form>
+            <div id="give-feedback-thank-you-msg-container" class="hidden">
+                <h3>Thank you for sharing your feedback!</h3>
+            </div>
         </div>
     </div>
 
@@ -80,6 +83,40 @@
         document.getElementById('close-modal-btn').addEventListener('click', function() {
             document.querySelector(".modal_form").reset();
             document.getElementById('user-experience-feedback-form-container').classList.remove("active");
+        });
+
+        document.getElementById('giveFeedbackForm').addEventListener('submit', function(event) {
+            // 1. Stop the browser from performing a full page reload
+            event.preventDefault();
+
+            // 2. Gather the form data, automatically including the CSRF token
+            const formData = new FormData(this);
+
+            // 3. Send the asynchronous request to Django
+            fetch('/submit-feedback-form-view', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest' 
+                }
+            })
+            .then(response => response.json()) // Parse the JSON response from the server
+            .then(data => {
+                if (!data.success) {
+                    // Handle validation errors
+                    if (data.errors) {
+                        displayFormErrors(data.errors);
+                    }
+                    throw new Error('Form validation failed.');
+                } else {
+                    document.getElementById('giveFeedbackForm').classList.add("hidden");
+                    document.getElementById('give-feedback-thank-you-msg-container').classList.remove("hidden");
+                    return data;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
         });
     </script>
 {% endblock %}

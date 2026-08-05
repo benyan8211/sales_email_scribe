@@ -1,4 +1,5 @@
 from django import forms
+from .models import Feedback
 
 class IntakeForm(forms.Form):
     company_name = forms.CharField(label="What is your company's name?", max_length=100, help_text="Maximum 100 characters.", 
@@ -54,13 +55,17 @@ class StarRatingField(forms.ChoiceField):
         kwargs['choices'] = [(i, str(i)) for i in range(5, 0, -1)]
         super().__init__(*args, **kwargs)
 
-class UserExperienceFeedbackForm(forms.Form):
+class UserExperienceFeedbackForm(forms.ModelForm):
     rating = StarRatingField(label="How was your experience today?")
 
-    user_experience_feedback_box = forms.CharField(label="Let us know your thoughts below!", 
+    comments = forms.CharField(label="Let us know your thoughts below!", 
         required=False,
         widget=forms.Textarea, max_length=2000, 
         help_text="Maximum 2000 characters.", 
         error_messages={"required": "AI feedback cannot be blank."})
+
+    class Meta:
+        model = Feedback
+        fields = ['rating', 'comments']
 
     required_css_class = 'required' 

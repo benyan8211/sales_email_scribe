@@ -193,3 +193,27 @@ def send_ai_generated_email_to_user(request):
             'success': False, 
             'errors': e
         }, status=400)
+
+def submit_feedback_form_view(request):
+    if request.method == 'POST':
+        form = UserExperienceFeedbackForm(request.POST)
+        if form.is_valid():            
+            feedback_instance = form.save(commit=False)
+
+            feedback_instance.username = request.user.username
+
+            feedback_instance.save()
+
+            # Return a JSON response instead of a full HTML template
+            return JsonResponse({
+                'success': True, 
+                'message': 'Form submitted successfully!'
+            })
+        else:
+            # Return form validation errors to the JavaScript front-end
+            return JsonResponse({
+                'success': False, 
+                'errors': form.errors.get_json_data() 
+            }, status=400)
+            
+    return JsonResponse({'success': False, 'errors': 'Invalid request method'}, status=405)

@@ -11,5 +11,6 @@ urlpatterns = [
     path('slow-processing-with-feedback', views.slow_processing_view_with_feedback, name='slow-processing-with-feedback'),
     path('give-ai-feedback-view', views.give_ai_feedback_view, name='give-ai-feedback-view'),
     path('send-ai-generated-email-to-user', views.send_ai_generated_email_to_user, name='send-ai-generated-email-to-user'),
-    path('confirmation', views.confirmation, name='confirmation')
+    path('confirmation', views.confirmation, name='confirmation'),
+    path('submit-feedback-form-view', views.submit_feedback_form_view, name='submit-feedback-form-view'),
 ]

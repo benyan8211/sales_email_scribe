@@ -10,10 +10,14 @@
     <h2>Create Account</h2>
     <form method="POST">
         {% csrf_token %}
-        {% if form.email.errors %}
-            <div style="color: red; margin-bottom: 15px; font-weight: bold;">
-                {{ form.email.errors }}
-            </div>
+        {% if form.errors %}
+            <ul class="error-list">
+                {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                        <li style="color: red; margin-bottom: 15px; font-weight: bold; white-space: nowrap;">{{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
         {% endif %}
         {% for field in form %}
             <div class="signup_form_field_container">

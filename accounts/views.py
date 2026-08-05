@@ -79,21 +79,15 @@ def login_view(request):
     if request.method == 'POST':
         try:
             form = LoginForm(request, data=request.POST)
-            # Simulate a fake response object
-            fake_response = requests.Response()
-            fake_response.status_code = 404
-            
-            # Raise the HTTPError explicitly
-            raise requests.exceptions.HTTPError("500 Internal Server", response=fake_response)
-            # form.fields['username'].label = "Email"
-            # if form.is_valid():
-            #     # The user enters an email, but Django processes it in the username field
-            #     username = form.cleaned_data.get('username')
-            #     password = form.cleaned_data.get('password')
-            #     user = authenticate(username=username, password=password)
-            #     if user is not None:
-            #         login(request, user)
-            #         return HttpResponseRedirect("/")
+            form.fields['username'].label = "Email"
+            if form.is_valid():
+                # The user enters an email, but Django processes it in the username field
+                username = form.cleaned_data.get('username')
+                password = form.cleaned_data.get('password')
+                user = authenticate(username=username, password=password)
+                if user is not None:
+                    login(request, user)
+                    return HttpResponseRedirect("/")
         except requests.exceptions.HTTPError:
         # Handles 404, 500, etc.
             messages.error(request, f"HTTP Request Failed! Please try again later.")

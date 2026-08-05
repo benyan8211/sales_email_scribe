@@ -113,3 +113,16 @@
 .submit_user_feedback_btn_container {
     justify-self: right;
 }
+
+.give_feedback_thank_you_msg_container {
+    justify-self: center;
+    margin-bottom: 60px;
+}
+
+.green_check_mark {
+    width: 300px; 
+    height: 300px;
+    object-fit: cover; 
+    display: block; 
+    margin: 0 auto;
+}

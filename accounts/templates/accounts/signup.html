@@ -16,10 +16,10 @@
             </div>
         {% endif %}
         {% for field in form %}
-            <div class="form-control">
-                {{ field.label_tag }}: {{ field }}
+            <div class="signup_form_field_container">
+                {{ field.label_tag }} {{ field }}
                 {% if field.help_text %}
-                    <div class="help-text">
+                    <div>
                         {{ field.help_text }}
                     </div>
                 {% endif %}

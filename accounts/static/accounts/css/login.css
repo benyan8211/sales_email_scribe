@@ -5,7 +5,7 @@
 .login_container input[type="text"], 
 .login_container input[type="password"] {
     width: 100%;
-    max-width: 450px;
+    max-width: 240px;
     padding: 10px;
 }
 

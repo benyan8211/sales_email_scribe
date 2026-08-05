@@ -10,6 +10,11 @@ class SignUpForm(UserCreationForm):
         model = User
         fields = ['email', 'password1', 'password2'] # This removes the username input field from the UI
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields["password2"].help_text = None
+
     def clean_email(self):
         email = self.cleaned_data.get("email")
         

@@ -50,7 +50,7 @@ def signup_view(request):
             messages.error(request, f"HTTP Request Failed! Please try again later.")
         except requests.exceptions.ConnectionError:
             # Handles network down, DNS failures
-            messages.error(request, "Failed to establish a connection to the server! Plase check your internet connection and try again.")
+            messages.error(request, "Failed to establish a connection to the server! Please check your internet connection and try again.")
         except requests.exceptions.Timeout:
             # Handles slow/stalled API servers
             messages.error(request, "The server is taking too long to respond. Please try again later.")
@@ -77,16 +77,35 @@ def activate_view(request, uidb64, token):
 
 def login_view(request):
     if request.method == 'POST':
-        form = LoginForm(request, data=request.POST)
-        form.fields['username'].label = "Email"
-        if form.is_valid():
-            # The user enters an email, but Django processes it in the username field
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                return HttpResponseRedirect("/")
+        try:
+            # Simulate a fake response object
+            fake_response = requests.Response()
+            fake_response.status_code = 500
+            
+            # Raise the HTTPError explicitly
+            raise requests.exceptions.HTTPError("500 Internal Server Error", response=fake_response)
+            # form = LoginForm(request, data=request.POST)
+            # form.fields['username'].label = "Email"
+            # if form.is_valid():
+            #     # The user enters an email, but Django processes it in the username field
+            #     username = form.cleaned_data.get('username')
+            #     password = form.cleaned_data.get('password')
+            #     user = authenticate(username=username, password=password)
+            #     if user is not None:
+            #         login(request, user)
+            #         return HttpResponseRedirect("/")
+        except requests.exceptions.HTTPError:
+        # Handles 404, 500, etc.
+            messages.error(request, f"HTTP Request Failed! Please try again later.")
+        except requests.exceptions.ConnectionError:
+            # Handles network down, DNS failures
+            messages.error(request, "Failed to establish a connection to the server! Please check your internet connection and try again.")
+        except requests.exceptions.Timeout:
+            # Handles slow/stalled API servers
+            messages.error(request, "The server is taking too long to respond. Please try again later.")
+        except requests.exceptions.RequestException as err:
+            # Fallback catch-all for any requests-related error
+            messages.error(request, "An unexpected error occurred! Please try again later.") 
     else:
         form = LoginForm()
         form.fields['username'].label = "Email"

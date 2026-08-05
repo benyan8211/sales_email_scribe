@@ -20,37 +20,31 @@ def signup_view(request):
         try:
             form = SignUpForm(request.POST)
             if form.is_valid():
-                mock_response = requests.Response()
-                mock_response.status_code = 500  # Simulate an Internal Server Error
-                mock_response.url = "https://example.com"
+                user = form.save(commit=False)
+                user.is_active = False  # Deactivate account until email verification
+                user.save()
                 
-                # 2. Force throw the HTTPError with your mock response
-                raise requests.exceptions.HTTPError("Simulated 500 Server Error", response=mock_response)
-                # user = form.save(commit=False)
-                # user.is_active = False  # Deactivate account until email verification
-                # user.save()
+                # Gather domain details to construct the verification URL
+                current_site = get_current_site(request)
+                subject = '[Sales Email Scribe] Activate Your Account'
                 
-                # # Gather domain details to construct the verification URL
-                # current_site = get_current_site(request)
-                # subject = '[Sales Email Scribe] Activate Your Account'
+                # Render the email text body from a template
+                message = render_to_string('accounts/activation_email.html', {
+                    'user': user,
+                    'domain': current_site.domain,
+                    'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                    'token': account_activation_token.make_token(user),
+                })
                 
-                # # Render the email text body from a template
-                # message = render_to_string('accounts/activation_email.html', {
-                #     'user': user,
-                #     'domain': current_site.domain,
-                #     'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                #     'token': account_activation_token.make_token(user),
-                # })
-                
-                # # Send the email message
-                # send_mail(
-                #     subject, 
-                #     message="Please use an HTML-compatible email client.", 
-                #     from_email=settings.EMAIL_HOST_USER, 
-                #     recipient_list=[user.email],
-                #     html_message=message,
-                # )
-                # return render(request, 'accounts/activation_sent.html')
+                # Send the email message
+                send_mail(
+                    subject, 
+                    message="Please use an HTML-compatible email client.", 
+                    from_email=settings.EMAIL_HOST_USER, 
+                    recipient_list=[user.email],
+                    html_message=message,
+                )
+                return render(request, 'accounts/activation_sent.html')
         except requests.exceptions.HTTPError:
         # Handles 404, 500, etc.
             messages.error(request, f"HTTP Request Failed! Please try again later.")

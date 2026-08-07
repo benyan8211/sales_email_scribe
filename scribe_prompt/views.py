@@ -14,6 +14,8 @@ from dotenv import load_dotenv
 from agents import Agent, Runner, trace
 from asgiref.sync import async_to_sync
 
+from .utils import execute_sales_agent
+
 # Only loads locally if the file exists; does nothing on Render
 if os.path.exists(".env"):
     load_dotenv()
@@ -88,13 +90,6 @@ def give_ai_feedback_view(request):
     return JsonResponse({'success': False, 'errors': 'Invalid request method'}, status=405)
 
 def slow_processing_view_with_feedback(request):
-    async def execute_sales_agent(system_prompt):
-            sales_agent = Agent(name="Sales Agent", instructions=system_prompt, model="gpt-5.4")
-            # The 'trace' context customizes metadata visible on your OpenAI Dashboard
-            with trace("Write a sales email"):
-                result = await Runner.run(sales_agent, "Write a sales email")
-                return result.final_output
-
     company_name = request.session['company_name']
     product_name = request.session['product_name']
     sales_email = request.session['sales_email']
@@ -120,13 +115,6 @@ def slow_processing_view_with_feedback(request):
     """)
 
 def slow_processing_view(request):
-    async def execute_sales_agent(system_prompt):
-            sales_agent = Agent(name="Sales Agent", instructions=system_prompt, model="gpt-5.4")
-            # The 'trace' context customizes metadata visible on your OpenAI Dashboard
-            with trace("Write a sales email"):
-                result = await Runner.run(sales_agent, "Write a sales email")
-                return result.final_output
-
     if 'sales_email' in request.session:
         return HttpResponse(f"""
             {request.session['sales_email']}

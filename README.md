@@ -51,7 +51,7 @@ After cloning the GitHub repository on your local machine, run this command in t
 
 - In the root directory, open a new terminal and run this command: ```uv run python3 manage.py runserver```
 
-### &rArr; Run unit tests:
+### &#10145; Run unit tests:
 
 - In the root directory, open a new terminal and run this command: 
 

@@ -168,33 +168,28 @@ def confirmation(request):
     return render(request, 'scribe_prompt/confirmation.html', { 'current_step': 3, 'form': form })
 
 def send_ai_generated_email_to_user(request):
-    fake_response = requests.Response()
-    fake_response.status_code = 500
-    
-    # Raise the HTTPError with the fake response
-    raise requests.exceptions.HTTPError("Simulated HTTP Error", response=fake_response)
-    # user = request.user
-    # subject = '[Sales Email Scribe] Your Requested AI generated sales email'
-    # message = render_to_string('scribe_prompt/ai_generated_email.html', {
-    #     'user': user,
-    #     'ai_generated_sales_email': request.session['sales_email']
-    # })
+    user = request.user
+    subject = '[Sales Email Scribe] Your Requested AI generated sales email'
+    message = render_to_string('scribe_prompt/ai_generated_email.html', {
+        'user': user,
+        'ai_generated_sales_email': request.session['sales_email']
+    })
 
-    # print(message)
+    print(message)
 
-    # # Send the email message
-    # send_mail(
-    #     subject, 
-    #     message="Please use an HTML-compatible email client.", 
-    #     from_email=settings.EMAIL_HOST_USER, 
-    #     recipient_list=[user.email],
-    #     html_message=message,
-    # )
+    # Send the email message
+    send_mail(
+        subject, 
+        message="Please use an HTML-compatible email client.", 
+        from_email=settings.EMAIL_HOST_USER, 
+        recipient_list=[user.email],
+        html_message=message,
+    )
 
-    # return JsonResponse({
-    #     'success': True, 
-    #     'message': 'Form submitted successfully!'
-    # })
+    return JsonResponse({
+        'success': True, 
+        'message': 'Form submitted successfully!'
+    })
 
 def submit_feedback_form_view(request):
     if request.method == 'POST':

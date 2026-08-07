@@ -95,29 +95,32 @@ def slow_processing_view_with_feedback(request):
                 result = await Runner.run(sales_agent, "Write a sales email")
                 return result.final_output
     try:
-        company_name = request.session['company_name']
-        product_name = request.session['product_name']
-        sales_email = request.session['sales_email']
-        system_prompt = f"""You are a sales agent working for {company_name}, a company that is trying to sell {product_name}. 
+        mock_response = requests.Response()
+        mock_response.status_code = 500  # Set desired error status
+        raise requests.exceptions.HTTPError("Simulated HTTP Error for testing", response=mock_response)
+        # company_name = request.session['company_name']
+        # product_name = request.session['product_name']
+        # sales_email = request.session['sales_email']
+        # system_prompt = f"""You are a sales agent working for {company_name}, a company that is trying to sell {product_name}. 
 
-        Here is a sales email that you previously wrote:
-        {sales_email}
+        # Here is a sales email that you previously wrote:
+        # {sales_email}
 
-        The user wants you to write a new email. This new email should improve upon that previously written email by taking 
-        into account the following feedback:
-        {request.session['feedback_box']}
+        # The user wants you to write a new email. This new email should improve upon that previously written email by taking 
+        # into account the following feedback:
+        # {request.session['feedback_box']}
 
-        Be sure to return your response in html. Make the email look aesthetically pleasing. Include the email's subject in a div that is center aligned.
-        Add a line break. Then include the html content within the body tag.
-        """
+        # Be sure to return your response in html. Make the email look aesthetically pleasing. Include the email's subject in a div that is center aligned.
+        # Add a line break. Then include the html content within the body tag.
+        # """
 
-        sales_email = async_to_sync(execute_sales_agent)(system_prompt)
+        # sales_email = async_to_sync(execute_sales_agent)(system_prompt)
 
-        request.session['sales_email'] = sales_email
+        # request.session['sales_email'] = sales_email
 
-        return HttpResponse(f"""
-            {sales_email}
-        """)
+        # return HttpResponse(f"""
+        #     {sales_email}
+        # """)
     except requests.exceptions.HTTPError:
         # Handles 404, 500, etc.
         messages.error(request, f"HTTP Request Failed! Please try again later.")

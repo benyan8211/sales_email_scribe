@@ -164,7 +164,9 @@
                     })
                     .then(data => {
                         location.reload();
-                    })
+                    }).catch(error => {
+                        console.error('Error:', error);
+                    });
                 }
             })
             .catch(error => {

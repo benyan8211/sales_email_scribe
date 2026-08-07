@@ -1,7 +1,7 @@
 # Sales Email Scribe
 
 <p align="center">
-  <img src="./static/images/sales-emailscribe.png" alt="Website Logo" width="600" height="300">
+  <img src="./static/images/sales_email_scribe_logo.png" alt="Website Logo" width="600" height="300">
 </p>
 
 This is an AI powered scribe that writes high quality, custom tailored sales emails.

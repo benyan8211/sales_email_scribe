@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 import os
+import sys
 from pathlib import Path
 from dotenv import load_dotenv
 import dj_database_url
@@ -18,6 +19,10 @@ import dj_database_url
 # Only loads locally if the file exists; does nothing on Render
 if os.path.exists(".env"):
     load_dotenv()
+
+if 'test' in sys.argv:
+    # Tell WhiteNoise to fall back to unhashed strings instead of crashing
+    WHITENOISE_MANIFEST_STRICT = False
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent

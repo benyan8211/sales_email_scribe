@@ -150,17 +150,21 @@ STORAGES = {
     },
 }
 
-# Base email configuration using standard Django backend
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+if DEBUG == True:
+    # Local development: Print to terminal
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    # Base email configuration using standard Django backend
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = 'smtp.gmail.com'
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
 
-# Secure credential sourcing via environment variables
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')  # Your full Gmail address
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')  # Your 16-digit App Password
+    # Secure credential sourcing via environment variables
+    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')  # Your full Gmail address
+    EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')  # Your 16-digit App Password
 
-# Default sender address for your outgoing emails
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+    # Default sender address for your outgoing emails
+    DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'

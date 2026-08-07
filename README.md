@@ -19,27 +19,10 @@ After cloning the GitHub repository on your local machine, run this command in t
 1. Open ```sales_email_scribe``` folder and find ```settings.py```
     1. Change ```DEBUG=False``` to ```DEBUG=True```
     2. Change ```ALLOWED_HOSTS = ['sales-email-scribe.onrender.com']``` to ```ALLOWED_HOSTS = ['sales-email-scribe.onrender.com', '127.0.0.1']```
-    3. Change
+2. In the root directory, create a ```.env``` file.
+    1. Put this in the file: ```DATABASE_URL=postgres://db_user:db_password@127.0.0.1:5432/db_name```
 
-    ```python
-    DATABASES = {
-        'default': dj_database_url.config(
-            default=os.environ.get('DATABASE_URL'),
-            conn_max_age=600
-        )
-    }
-    ```
 
-    to: 
-
-    ```python
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
-    ```
 
 ## Live Demo
 

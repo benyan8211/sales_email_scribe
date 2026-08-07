@@ -5,8 +5,10 @@ This is an AI powered scribe that writes high quality, custom tailored sales ema
 ## Technologies Used 
 
 - Django Framework (Python)
-- OpenAI Agents SDK
 - uv
+- OpenAI Agents SDK
+- Google SMTP
+- PostgreSQL
 
 ## Live Demo
 

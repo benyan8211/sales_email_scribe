@@ -127,53 +127,40 @@ def slow_processing_view(request):
                 result = await Runner.run(sales_agent, "Write a sales email")
                 return result.final_output
 
-    try:
-        if 'sales_email' in request.session:
-            return HttpResponse(f"""
-                {request.session['sales_email']}
-            """)
-        company_name = request.session['company_name']
-        product_name = request.session['product_name']
-        product_details = request.session['product_details']
-        tone_of_email = request.session['tone_of_email']
-        tone_of_email_description_catalog = {
-            "serious": """The tone of the sales email should be serious, and very professional.""",
-            "fun": """The tone of the sales email should be fun and lighthearted and contain mild humor.""",
-            "a_mix_of_both": """The tone of the sales email should be a mix of serious and fun. 
-            It should be professional, but also include hints of mild humor.""",
-            "i_am_not_sure": """The tone of the sales email has not been specified. Please use your best judgment."""
-        }
-        system_prompt = f"""You are a sales agent working for {company_name}, a company that is trying to sell {product_name}. 
-        
-        Here is a description of {product_name}:
-        {product_details}
-
-        You are tasked with writing sales emails.
-
-        {tone_of_email_description_catalog.get(tone_of_email)}
-
-        Be sure to return your response in html. Make the email look aesthetically pleasing. Include the email's subject in a div that is center aligned.
-        Add a line break. Then include the html content within the body tag.
-        """
-
-        sales_email = async_to_sync(execute_sales_agent)(system_prompt)
-        request.session['sales_email'] = sales_email
-
+    if 'sales_email' in request.session:
         return HttpResponse(f"""
-            {sales_email}
+            {request.session['sales_email']}
         """)
-    except requests.exceptions.HTTPError:
-        # Handles 404, 500, etc.
-        messages.error(request, f"HTTP Request Failed! Please try again later.")
-    except requests.exceptions.ConnectionError:
-        # Handles network down, DNS failures
-        messages.error(request, "Failed to establish a connection to the server! Please check your internet connection and try again.")
-    except requests.exceptions.Timeout:
-        # Handles slow/stalled API servers
-        messages.error(request, "The server is taking too long to respond. Please try again later.")
-    except requests.exceptions.RequestException as err:
-        # Fallback catch-all for any requests-related error
-        messages.error(request, "An unexpected error occurred! Please try again later.") 
+    company_name = request.session['company_name']
+    product_name = request.session['product_name']
+    product_details = request.session['product_details']
+    tone_of_email = request.session['tone_of_email']
+    tone_of_email_description_catalog = {
+        "serious": """The tone of the sales email should be serious, and very professional.""",
+        "fun": """The tone of the sales email should be fun and lighthearted and contain mild humor.""",
+        "a_mix_of_both": """The tone of the sales email should be a mix of serious and fun. 
+        It should be professional, but also include hints of mild humor.""",
+        "i_am_not_sure": """The tone of the sales email has not been specified. Please use your best judgment."""
+    }
+    system_prompt = f"""You are a sales agent working for {company_name}, a company that is trying to sell {product_name}. 
+    
+    Here is a description of {product_name}:
+    {product_details}
+
+    You are tasked with writing sales emails.
+
+    {tone_of_email_description_catalog.get(tone_of_email)}
+
+    Be sure to return your response in html. Make the email look aesthetically pleasing. Include the email's subject in a div that is center aligned.
+    Add a line break. Then include the html content within the body tag.
+    """
+
+    sales_email = async_to_sync(execute_sales_agent)(system_prompt)
+    request.session['sales_email'] = sales_email
+
+    return HttpResponse(f"""
+        {sales_email}
+    """)
 
 @login_required(login_url='/accounts/login/')
 def confirmation(request):
@@ -181,32 +168,28 @@ def confirmation(request):
     return render(request, 'scribe_prompt/confirmation.html', { 'current_step': 3, 'form': form })
 
 def send_ai_generated_email_to_user(request):
-    # try: 
-        response = requests.Response()
-        response.status_code = 404
-        raise requests.exceptions.HTTPError("404 Not Found", response=response)
-        # user = request.user
-        # subject = '[Sales Email Scribe] Your Requested AI generated sales email'
-        # message = render_to_string('scribe_prompt/ai_generated_email.html', {
-        #     'user': user,
-        #     'ai_generated_sales_email': request.session['sales_email']
-        # })
+    user = request.user
+    subject = '[Sales Email Scribe] Your Requested AI generated sales email'
+    message = render_to_string('scribe_prompt/ai_generated_email.html', {
+        'user': user,
+        'ai_generated_sales_email': request.session['sales_email']
+    })
 
-        # print(message)
+    print(message)
 
-        # # Send the email message
-        # send_mail(
-        #     subject, 
-        #     message="Please use an HTML-compatible email client.", 
-        #     from_email=settings.EMAIL_HOST_USER, 
-        #     recipient_list=[user.email],
-        #     html_message=message,
-        # )
+    # Send the email message
+    send_mail(
+        subject, 
+        message="Please use an HTML-compatible email client.", 
+        from_email=settings.EMAIL_HOST_USER, 
+        recipient_list=[user.email],
+        html_message=message,
+    )
 
-        # return JsonResponse({
-        #     'success': True, 
-        #     'message': 'Form submitted successfully!'
-        # })
+    return JsonResponse({
+        'success': True, 
+        'message': 'Form submitted successfully!'
+    })
 
 def submit_feedback_form_view(request):
     if request.method == 'POST':

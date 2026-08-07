@@ -9,6 +9,7 @@ This is an AI powered scribe that writes high quality, custom tailored sales ema
 - OpenAI Agents SDK
 - Google SMTP
 - PostgreSQL
+- Render
 
 ## Live Demo
 

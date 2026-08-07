@@ -31,14 +31,14 @@ After cloning the GitHub repository on your local machine, run this command in t
 - In the root directory, create a ```.env``` file
     - Add this as the first line of ```.env```: ```DJANGO_SECRET_KEY=key```
     - Add this as the second line of ```.env```: ```DATABASE_URL=postgres://db_user:db_password@127.0.0.1:5432/db_name```
-    - If you want to use **OpenAI** models (requires minimum $5 upfront):
+    - **Option 1:** Use OpenAI model (requires minimum $5 upfront):
         - Go to ```https://platform.openai.com/```
         - Create an account
         - Put a minimum of ```$5``` in your account's credit balance
         - Navigate to ```API Keys```
         - Create an API Key
         - In your ```.env``` file, add this in a new line: ```OPENAI_API_KEY=<your_key_here>```
-    - If you want to use **Ollama** models (free):
+    - **Option 2:** Use Ollama model (free):
         - Download and install Ollama from ```https://ollama.com/```
         - Open up a new terminal window and run this command: ```ollama run phi4``` 
         - In your ```.env``` file, add this in a new line: ```OPENAI_BASE_URL=http://localhost:11434/v1```

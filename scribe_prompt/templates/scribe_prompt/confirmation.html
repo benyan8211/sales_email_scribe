@@ -90,7 +90,10 @@
         });
 
         document.getElementById('close-modal-btn').addEventListener('click', function() {
-            document.querySelector(".modal_form").reset();
+            const modal_form = document.querySelector(".modal_form");
+            if (modal_form) {
+                modal_form.reset();
+            }
             document.getElementById('user-experience-feedback-form-container').classList.remove("active");
         });
 

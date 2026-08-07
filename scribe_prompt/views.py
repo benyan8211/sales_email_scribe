@@ -181,7 +181,7 @@ def confirmation(request):
     return render(request, 'scribe_prompt/confirmation.html', { 'current_step': 3, 'form': form })
 
 def send_ai_generated_email_to_user(request):
-    try: 
+    # try: 
         response = requests.Response()
         response.status_code = 404
         raise requests.exceptions.HTTPError("404 Not Found", response=response)
@@ -207,18 +207,6 @@ def send_ai_generated_email_to_user(request):
         #     'success': True, 
         #     'message': 'Form submitted successfully!'
         # })
-    except requests.exceptions.HTTPError:
-        # Handles 404, 500, etc.
-        messages.error(request, f"HTTP Request Failed! Please try again later.")
-    except requests.exceptions.ConnectionError:
-        # Handles network down, DNS failures
-        messages.error(request, "Failed to establish a connection to the server! Please check your internet connection and try again.")
-    except requests.exceptions.Timeout:
-        # Handles slow/stalled API servers
-        messages.error(request, "The server is taking too long to respond. Please try again later.")
-    except requests.exceptions.RequestException as err:
-        # Fallback catch-all for any requests-related error
-        messages.error(request, "An unexpected error occurred! Please try again later.") 
 
 def submit_feedback_form_view(request):
     if request.method == 'POST':

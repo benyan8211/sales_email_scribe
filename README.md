@@ -17,7 +17,7 @@ This is an AI powered scribe that writes high quality, custom tailored sales ema
 
 After cloning the GitHub repository on your local machine, run this command in terminal: ```uv sync```
 
-### ⚜️ Run the project locally:
+### &#10145; Run the project locally:
 
 #### Part 1: Modify settings
 

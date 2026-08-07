@@ -44,6 +44,7 @@ After cloning the GitHub repository on your local machine, run this command in t
         - In your ```.env``` file, add this in a new line: ```OPENAI_API_KEY=ollama```
         - In root directory, look for ```scribe_prompt``` folder and open ```utils.py``` file.
         - On ```line 22```, change ```model="gpt-5.4"``` to ```model="phi4"```.
+    - Save your changes
 
 #### Part 3: Boot up Sales Email Scribe
 

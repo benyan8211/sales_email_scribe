@@ -29,7 +29,8 @@ After cloning the GitHub repository on your local machine, run this command in t
 #### Part 2: Create ```.env``` file and configure AI model
 
 - In the root directory, create a ```.env``` file
-    - Add this in the first line: ```DATABASE_URL=postgres://db_user:db_password@127.0.0.1:5432/db_name```
+    - Add this as the first line of ```.env```: ```DJANGO_SECRET_KEY=key```
+    - Add this as the second line of ```.env```: ```DATABASE_URL=postgres://db_user:db_password@127.0.0.1:5432/db_name```
     - If you want to use **OpenAI** models (requires minimum $5 upfront):
         - Go to ```https://platform.openai.com/```
         - Create an account

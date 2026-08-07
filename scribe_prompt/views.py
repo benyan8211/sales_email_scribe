@@ -140,45 +140,40 @@ def slow_processing_view(request):
                 return result.final_output
 
     try:
-        fake_response = requests.Response()
-        fake_response.status_code = 500
+        if 'sales_email' in request.session:
+            return HttpResponse(f"""
+                {request.session['sales_email']}
+            """)
+        company_name = request.session['company_name']
+        product_name = request.session['product_name']
+        product_details = request.session['product_details']
+        tone_of_email = request.session['tone_of_email']
+        tone_of_email_description_catalog = {
+            "serious": """The tone of the sales email should be serious, and very professional.""",
+            "fun": """The tone of the sales email should be fun and lighthearted and contain mild humor.""",
+            "a_mix_of_both": """The tone of the sales email should be a mix of serious and fun. 
+            It should be professional, but also include hints of mild humor.""",
+            "i_am_not_sure": """The tone of the sales email has not been specified. Please use your best judgment."""
+        }
+        system_prompt = f"""You are a sales agent working for {company_name}, a company that is trying to sell {product_name}. 
         
-        # Raise the HTTPError using the fake response
-        raise requests.exceptions.HTTPError("500 Server Error", response=fake_response)
-        # if 'sales_email' in request.session:
-        #     return HttpResponse(f"""
-        #         {request.session['sales_email']}
-        #     """)
-        # company_name = request.session['company_name']
-        # product_name = request.session['product_name']
-        # product_details = request.session['product_details']
-        # tone_of_email = request.session['tone_of_email']
-        # tone_of_email_description_catalog = {
-        #     "serious": """The tone of the sales email should be serious, and very professional.""",
-        #     "fun": """The tone of the sales email should be fun and lighthearted and contain mild humor.""",
-        #     "a_mix_of_both": """The tone of the sales email should be a mix of serious and fun. 
-        #     It should be professional, but also include hints of mild humor.""",
-        #     "i_am_not_sure": """The tone of the sales email has not been specified. Please use your best judgment."""
-        # }
-        # system_prompt = f"""You are a sales agent working for {company_name}, a company that is trying to sell {product_name}. 
-        
-        # Here is a description of {product_name}:
-        # {product_details}
+        Here is a description of {product_name}:
+        {product_details}
 
-        # You are tasked with writing sales emails.
+        You are tasked with writing sales emails.
 
-        # {tone_of_email_description_catalog.get(tone_of_email)}
+        {tone_of_email_description_catalog.get(tone_of_email)}
 
-        # Be sure to return your response in html. Make the email look aesthetically pleasing. Include the email's subject in a div that is center aligned.
-        # Add a line break. Then include the html content within the body tag.
-        # """
+        Be sure to return your response in html. Make the email look aesthetically pleasing. Include the email's subject in a div that is center aligned.
+        Add a line break. Then include the html content within the body tag.
+        """
 
-        # sales_email = async_to_sync(execute_sales_agent)(system_prompt)
-        # request.session['sales_email'] = sales_email
+        sales_email = async_to_sync(execute_sales_agent)(system_prompt)
+        request.session['sales_email'] = sales_email
 
-        # return HttpResponse(f"""
-        #     {sales_email}
-        # """)
+        return HttpResponse(f"""
+            {sales_email}
+        """)
     except requests.exceptions.HTTPError:
         # Handles 404, 500, etc.
         messages.error(request, f"HTTP Request Failed! Please try again later.")

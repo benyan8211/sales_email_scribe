@@ -11,6 +11,10 @@ This is an AI powered scribe that writes high quality, custom tailored sales ema
 - PostgreSQL
 - Render
 
+## Local Setup
+
+After cloning the GitHub repository on your local machine, run this command in terminal: ```uv sync```
+
 ## Live Demo
 
 Link: https://sales-email-scribe.onrender.com/ 

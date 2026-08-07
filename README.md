@@ -42,6 +42,8 @@ After cloning the GitHub repository on your local machine, run this command in t
         - Navigate to ```API Keys```
         - Create an API Key
         - In your ```.env``` file, add this in a new line: ```OPENAI_API_KEY=<your_key_here>```
+        - (Optional) In root directory, look for ```scribe_prompt``` folder and open ```utils.py``` file
+        - (Optional) On ```line 22```, you can keep ```model="gpt-5.4"``` as is or change it to a different OpenAI model of your choice
     - **Option 2:** Use Ollama model (free):
         - Download and install Ollama from ```https://ollama.com/```
         - Open up a new terminal window and run this command: ```ollama run phi4``` 
@@ -49,6 +51,7 @@ After cloning the GitHub repository on your local machine, run this command in t
         - In your ```.env``` file, add this in a new line: ```OPENAI_API_KEY=ollama```
         - In root directory, look for ```scribe_prompt``` folder and open ```utils.py``` file
         - On ```line 22```, change ```model="gpt-5.4"``` to ```model="phi4"```
+        - (Optional) You may change the model to any other Ollama model of your choice
     - Save your changes
 
 #### Part 3: Boot up Sales Email Scribe

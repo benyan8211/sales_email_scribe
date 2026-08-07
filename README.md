@@ -21,9 +21,9 @@ After cloning the GitHub repository on your local machine, run this command in t
 
 #### Part 1: Modify settings
 
-Open ```sales_email_scribe``` folder and find ```settings.py```
-    1. Change ```DEBUG=False``` to ```DEBUG=True```
-    2. Change ```ALLOWED_HOSTS = ['sales-email-scribe.onrender.com']``` to ```ALLOWED_HOSTS = ['sales-email-scribe.onrender.com', '127.0.0.1']```
+- Open ```sales_email_scribe``` folder and find ```settings.py```
+    - Change ```DEBUG=False``` to ```DEBUG=True```
+    - Change ```ALLOWED_HOSTS = ['sales-email-scribe.onrender.com']``` to ```ALLOWED_HOSTS = ['sales-email-scribe.onrender.com', '127.0.0.1']```
 
 #### Part 2: Create ```.env``` file and choose AI model
 

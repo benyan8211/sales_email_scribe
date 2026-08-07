@@ -2,6 +2,8 @@
 
 This is an AI powered scribe that writes high quality, custom tailored sales emails.
 
+**Live Demo:** https://sales-email-scribe.onrender.com/ 
+
 ## Technologies Used 
 
 - Django Framework (Python)
@@ -43,11 +45,3 @@ Open ```sales_email_scribe``` folder and find ```settings.py```
         6. On ```line 22```, change ```model="gpt-5.4"``` to ```model="phi4"```.
 3. Open a new terminal window with the root directory of the project as the current working directory.
     1. Run this command in the terminal window in order to boot up the project: ```uv run python3 manage.py runserver```
-
-
-
-
-
-## Live Demo
-
-Link: https://sales-email-scribe.onrender.com/ 

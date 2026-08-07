@@ -7,18 +7,6 @@
 
 {% block subcontent %}
     <div id="django-error-messages-wrapper">
-        {% if messages %}
-            {% for message in messages %}
-                <!-- Filter specifically for 'error' tags -->
-                {% if message.tags == 'error' %}
-                    <div class="alert-box alert-error" style="width: 400px; justify-self: center;">
-                        <span>{{ message }}</span>
-                        <button class="alert-close-btn" onclick="this.parentElement.remove();">&times;</button>
-                    </div>
-                {% endif %}
-            {% endfor %}
-        {% endif %}
-    </div>
     
     <!-- This shows up instantly -->
     <div id="loading-container" class="loading_container">

@@ -17,12 +17,14 @@ After cloning the GitHub repository on your local machine, run this command in t
 
 ### To run the project locally:
 
-#### Test small Heading
+#### Part 1: Modify settings
 
-
-1. Open ```sales_email_scribe``` folder and find ```settings.py```
+Open ```sales_email_scribe``` folder and find ```settings.py```
     1. Change ```DEBUG=False``` to ```DEBUG=True```
     2. Change ```ALLOWED_HOSTS = ['sales-email-scribe.onrender.com']``` to ```ALLOWED_HOSTS = ['sales-email-scribe.onrender.com', '127.0.0.1']```
+
+#### Part 2: Create ```.env``` file and choose AI model
+
 2. In the root directory, create a ```.env``` file.
     1. Add this in the first line: ```DATABASE_URL=postgres://db_user:db_password@127.0.0.1:5432/db_name```
     2. If you want to use **OpenAI** models (requires minimum $5 upfront):

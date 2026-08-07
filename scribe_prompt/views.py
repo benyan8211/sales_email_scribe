@@ -182,33 +182,43 @@ def confirmation(request):
 
 def send_ai_generated_email_to_user(request):
     try: 
-        user = request.user
-        subject = '[Sales Email Scribe] Your Requested AI generated sales email'
-        message = render_to_string('scribe_prompt/ai_generated_email.html', {
-            'user': user,
-            'ai_generated_sales_email': request.session['sales_email']
-        })
+        response = requests.Response()
+        response.status_code = 404
+        raise requests.exceptions.HTTPError("404 Not Found", response=response)
+        # user = request.user
+        # subject = '[Sales Email Scribe] Your Requested AI generated sales email'
+        # message = render_to_string('scribe_prompt/ai_generated_email.html', {
+        #     'user': user,
+        #     'ai_generated_sales_email': request.session['sales_email']
+        # })
 
-        print(message)
+        # print(message)
 
-        # Send the email message
-        send_mail(
-            subject, 
-            message="Please use an HTML-compatible email client.", 
-            from_email=settings.EMAIL_HOST_USER, 
-            recipient_list=[user.email],
-            html_message=message,
-        )
+        # # Send the email message
+        # send_mail(
+        #     subject, 
+        #     message="Please use an HTML-compatible email client.", 
+        #     from_email=settings.EMAIL_HOST_USER, 
+        #     recipient_list=[user.email],
+        #     html_message=message,
+        # )
 
-        return JsonResponse({
-            'success': True, 
-            'message': 'Form submitted successfully!'
-        })
-    except Exception as e:
-        return JsonResponse({
-            'success': False, 
-            'errors': e
-        }, status=400)
+        # return JsonResponse({
+        #     'success': True, 
+        #     'message': 'Form submitted successfully!'
+        # })
+    except requests.exceptions.HTTPError:
+        # Handles 404, 500, etc.
+        messages.error(request, f"HTTP Request Failed! Please try again later.")
+    except requests.exceptions.ConnectionError:
+        # Handles network down, DNS failures
+        messages.error(request, "Failed to establish a connection to the server! Please check your internet connection and try again.")
+    except requests.exceptions.Timeout:
+        # Handles slow/stalled API servers
+        messages.error(request, "The server is taking too long to respond. Please try again later.")
+    except requests.exceptions.RequestException as err:
+        # Fallback catch-all for any requests-related error
+        messages.error(request, "An unexpected error occurred! Please try again later.") 
 
 def submit_feedback_form_view(request):
     if request.method == 'POST':

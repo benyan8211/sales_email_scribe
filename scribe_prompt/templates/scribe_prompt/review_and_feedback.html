@@ -166,6 +166,7 @@
                         location.reload();
                     }).catch(error => {
                         console.error('Error:', error);
+                        document.getElementById("loading-container").classList.add("hidden");
                     });
                 }
             })

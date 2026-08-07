@@ -15,7 +15,11 @@ This is an AI powered scribe that writes high quality, custom tailored sales ema
 
 After cloning the GitHub repository on your local machine, run this command in terminal: ```uv sync```
 
-**To run the project locally:** 
+### To run the project locally:
+
+#### Test small Heading
+
+
 1. Open ```sales_email_scribe``` folder and find ```settings.py```
     1. Change ```DEBUG=False``` to ```DEBUG=True```
     2. Change ```ALLOWED_HOSTS = ['sales-email-scribe.onrender.com']``` to ```ALLOWED_HOSTS = ['sales-email-scribe.onrender.com', '127.0.0.1']```

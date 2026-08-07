@@ -194,18 +194,23 @@ def send_ai_generated_email_to_user(request):
 def submit_feedback_form_view(request):
     if request.method == 'POST':
         form = UserExperienceFeedbackForm(request.POST)
-        if form.is_valid():            
-            feedback_instance = form.save(commit=False)
+        if form.is_valid():          
+            fake_response = requests.Response()
+            fake_response.status_code = 500
+            
+            # Raise the HTTPError with the fake response
+            raise requests.exceptions.HTTPError("Simulated HTTP Error", response=fake_response)  
+            # feedback_instance = form.save(commit=False)
 
-            feedback_instance.username = request.user.username
+            # feedback_instance.username = request.user.username
 
-            feedback_instance.save()
+            # feedback_instance.save()
 
-            # Return a JSON response instead of a full HTML template
-            return JsonResponse({
-                'success': True, 
-                'message': 'Form submitted successfully!'
-            })
+            # # Return a JSON response instead of a full HTML template
+            # return JsonResponse({
+            #     'success': True, 
+            #     'message': 'Form submitted successfully!'
+            # })
         else:
             # Return form validation errors to the JavaScript front-end
             return JsonResponse({

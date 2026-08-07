@@ -28,10 +28,10 @@ class BaseTemplateDirectUnitTest(SimpleTestCase):
         compiled_template = Template(template_to_render)
         
         # Keep the context clear of complex objects to avoid DB queries
-        context = Context({'user': {'is_authenticated': True, 'email': 'benyan@gmail.com'}})
+        context = Context({'user': {'is_authenticated': True, 'email': 'test@example.com'}})
         rendered_html = compiled_template.render(context)
         
-        self.assertIn('Logged in as: benyan@gmail.com', rendered_html)
+        self.assertIn('Logged in as: test@example.com', rendered_html)
         self.assertIn(' <a href="#" onclick="this.closest(\'form\').submit(); return false;">Log out</a>', rendered_html)
         self.assertIn('/static/images/sales_email_scribe_logo.png', rendered_html)
         self.assertIn('<p>Testing.</p>', rendered_html)

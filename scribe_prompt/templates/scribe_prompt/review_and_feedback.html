@@ -6,17 +6,19 @@
 {% endblock %}
 
 {% block subcontent %}
-    {% if messages %}
-        {% for message in messages %}
-            <!-- Filter specifically for 'error' tags -->
-            {% if message.tags == 'error' %}
-                <div class="alert-box alert-error" style="width: 400px; justify-self: center;">
-                    <span>{{ message }}</span>
-                    <button class="alert-close-btn" onclick="this.parentElement.remove();">&times;</button>
-                </div>
-            {% endif %}
-        {% endfor %}
-    {% endif %}
+    <div id="django-error-messages-wrapper">
+        {% if messages %}
+            {% for message in messages %}
+                <!-- Filter specifically for 'error' tags -->
+                {% if message.tags == 'error' %}
+                    <div class="alert-box alert-error" style="width: 400px; justify-self: center;">
+                        <span>{{ message }}</span>
+                        <button class="alert-close-btn" onclick="this.parentElement.remove();">&times;</button>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </div>
     <!-- This shows up instantly -->
     <div id="loading-container" class="loading_container">
         <div class="spinner"></div>
@@ -167,6 +169,35 @@
                     }).catch(error => {
                         console.error('Error:', error);
                         document.getElementById("loading-container").classList.add("hidden");
+
+                        const messageWrapper = document.getElementById('django-error-messages-wrapper');
+    
+                        if (messageWrapper) {
+                            // Clear any previous error boxes so they don't stack indefinitely
+                            messageWrapper.innerHTML = ''; 
+
+                            // 2. Build the precise HTML structure matching your Django template
+                            const alertBox = document.createElement('div');
+                            alertBox.className = 'alert-box alert-error';
+                            alertBox.style.width = '400px';
+                            alertBox.style.justifySelf = 'center';
+
+                            const textSpan = document.createElement('span');
+                            // Fallback message if your error object doesn't contain a clean text string
+                            textSpan.textContent = 'An unexpected error occurred! Please try again later.'; 
+
+                            const closeBtn = document.createElement('button');
+                            closeBtn.className = 'alert-close-btn';
+                            closeBtn.innerHTML = '&times;';
+                            closeBtn.onclick = function() {
+                                this.parentElement.remove();
+                            };
+
+                            // 3. Assemble the elements and inject them into the page layout
+                            alertBox.appendChild(textSpan);
+                            alertBox.appendChild(closeBtn);
+                            messageWrapper.appendChild(alertBox);
+                        }
                     });
                 }
             })

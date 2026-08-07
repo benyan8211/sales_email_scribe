@@ -94,10 +94,10 @@ def slow_processing_view_with_feedback(request):
             with trace("Write a sales email"):
                 result = await Runner.run(sales_agent, "Write a sales email")
                 return result.final_output
-    try:
-        mock_response = requests.Response()
-        mock_response.status_code = 500  # Set desired error status
-        raise requests.exceptions.HTTPError("Simulated HTTP Error for testing", response=mock_response)
+    # try:
+    mock_response = requests.Response()
+    mock_response.status_code = 500  # Set desired error status
+    raise requests.exceptions.HTTPError("Simulated HTTP Error for testing", response=mock_response)
         # company_name = request.session['company_name']
         # product_name = request.session['product_name']
         # sales_email = request.session['sales_email']
@@ -121,18 +121,8 @@ def slow_processing_view_with_feedback(request):
         # return HttpResponse(f"""
         #     {sales_email}
         # """)
-    except requests.exceptions.HTTPError:
-        # Handles 404, 500, etc.
-        messages.error(request, f"HTTP Request Failed! Please try again later.")
-    except requests.exceptions.ConnectionError:
-        # Handles network down, DNS failures
-        messages.error(request, "Failed to establish a connection to the server! Please check your internet connection and try again.")
-    except requests.exceptions.Timeout:
-        # Handles slow/stalled API servers
-        messages.error(request, "The server is taking too long to respond. Please try again later.")
-    except requests.exceptions.RequestException as err:
-        # Fallback catch-all for any requests-related error
-        messages.error(request, "An unexpected error occurred! Please try again later.") 
+    # except Exception as e:
+    #     return HttpResponse(f"An error occurred: {str(e)}", status=500)
 
 def slow_processing_view(request):
     async def execute_sales_agent(system_prompt):

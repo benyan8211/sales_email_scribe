@@ -49,9 +49,8 @@ After cloning the GitHub repository on your local machine, run this command in t
 
 #### Part 3: Boot up Sales Email Scribe
 
-- Open a new terminal window with the root directory of this project as the current working directory
-    - Run this command in the terminal window: ```uv run python3 manage.py runserver```
+In the root directory, open a new terminal and run this command: ```uv run python3 manage.py runserver```
 
 ### ⚜️ Run unit tests:
 
-Run this command: ```uv run python3 manage.py test --settings=sales_email_scribe.settings_test```
+In the root directory, open a new terminal and run this command: ```uv run python3 manage.py test --settings=sales_email_scribe.settings_test```

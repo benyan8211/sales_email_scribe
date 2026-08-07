@@ -53,8 +53,8 @@
             }
         }
 
-        function renderErrorBox() {
-            const messageWrapper = document.getElementById('django-error-messages-wrapper');
+        function renderErrorBox(id) {
+            const messageWrapper = document.getElementById(id);
     
             if (messageWrapper) {
                 // Clear any previous error boxes so they don't stack indefinitely

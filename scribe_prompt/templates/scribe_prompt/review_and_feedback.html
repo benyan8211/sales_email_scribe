@@ -10,7 +10,7 @@
         {% for message in messages %}
             <!-- Filter specifically for 'error' tags -->
             {% if message.tags == 'error' %}
-                <div class="alert-box alert-error" style="width: 400px;">
+                <div class="alert-box alert-error" style="width: 400px; justify-self: center;">
                     <span>{{ message }}</span>
                     <button class="alert-close-btn" onclick="this.parentElement.remove();">&times;</button>
                 </div>
@@ -80,7 +80,7 @@
             })
             .catch(error => {
                 console.error(error);
-                document.getElementById("loading-screen").classList.add("hidden");
+                document.getElementById("loading-container").classList.add("hidden");
             });
         });
 

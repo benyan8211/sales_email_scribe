@@ -72,7 +72,7 @@
             .catch(error => {
                 console.error(error);
                 document.getElementById("loading-container").classList.add("hidden");
-                renderErrorBox("django-error-messages-wrapper");
+                renderErrorBox("django-error-messages-wrapper", "465px");
             });
         });
 
@@ -159,7 +159,7 @@
                     }).catch(error => {
                         console.error('Error:', error);
                         document.getElementById("loading-container").classList.add("hidden");
-                        renderErrorBox("django-error-messages-wrapper");
+                        renderErrorBox("django-error-messages-wrapper", "465px");
                     });
                 }
             })

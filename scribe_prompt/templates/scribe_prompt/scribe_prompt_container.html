@@ -53,7 +53,7 @@
             }
         }
 
-        function renderErrorBox(id) {
+        function renderErrorBox(id, width) {
             const messageWrapper = document.getElementById(id);
     
             if (messageWrapper) {
@@ -63,8 +63,9 @@
                 // 2. Build the precise HTML structure matching your Django template
                 const alertBox = document.createElement('div');
                 alertBox.className = 'alert-box alert-error';
-                alertBox.style.width = '465px';
+                alertBox.style.width = width;
                 alertBox.style.justifySelf = 'center';
+                alertBox.style.marginBottom = '40px';
 
                 const textSpan = document.createElement('span');
                 // Fallback message if your error object doesn't contain a clean text string

@@ -17,7 +17,7 @@ This is an AI powered scribe that writes high quality, custom tailored sales ema
 
 After cloning the GitHub repository on your local machine, run this command in terminal: ```uv sync```
 
-### To run the project locally:
+### Run the project locally:
 
 #### Part 1: Modify settings
 
@@ -51,3 +51,7 @@ After cloning the GitHub repository on your local machine, run this command in t
 
 - Open a new terminal window with the root directory of this project as the current working directory
     - Run this command in the terminal window: ```uv run python3 manage.py runserver```
+
+### Run Unit Tests:
+
+Run this command: ```uv run python3 manage.py test --settings=sales_email_scribe.settings_test```

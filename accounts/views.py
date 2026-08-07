@@ -78,6 +78,7 @@ def activate_view(request, uidb64, token):
 def login_view(request):
     if request.method == 'POST':
         try:
+            form = LoginForm(request, data=request.POST)
             fake_response = requests.Response()
             fake_response.status_code = 500
             

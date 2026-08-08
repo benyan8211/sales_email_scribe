@@ -36,7 +36,7 @@ Next, run this command: ```uv run python3 manage.py migrate```
 #### Part 2: Create ```.env``` file and configure AI model
 
 - In the root directory, create a ```.env``` file
-    - Add this as the first line of ```.env```: ```DJANGO_SECRET_KEY=key```
+    - Add this as the first line of your ```.env``` file: ```DJANGO_SECRET_KEY=key```
     - **Option 1:** Use OpenAI model (requires minimum $5 upfront):
         - Go to ```https://platform.openai.com/```
         - Create an account

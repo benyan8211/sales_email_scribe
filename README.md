@@ -26,11 +26,16 @@ Next, run this command: ```uv run python3 manage.py migrate```
 
 ### &#10145; Run the project locally:
 
+#### Part 0: IMPORTANT! PLEASE READ!
+- Parts of the user experience involve the user receiving emails from our support email account. If you are running this project **locally**, and as part of the experience, you enter in your own email address, you will not actually receive any emails from us! Instead all emails that you would have received from us are printed to standard output. Please look at standard output in
+your terminal for the emails as they are integral for having a satisfying user experience. This only applies if you are running our project **locally**. If you are running our project in **production**, you will receive emails from our support email account.
+
 #### Part 1: Modify settings
 
 - In the root directory, find the ```sales_email_scribe``` folder, open it and then open the ```settings.py``` file
     - Change ```DEBUG=False``` to ```DEBUG=True```
     - Change ```ALLOWED_HOSTS = ['sales-email-scribe.onrender.com']``` to ```ALLOWED_HOSTS = ['sales-email-scribe.onrender.com', '127.0.0.1']```
+    - Change TIME_ZONE to the valid IANA time zone name corresponding to the time zone you are in
     - Save your changes
 
 #### Part 2: Create ```.env``` file and configure AI model

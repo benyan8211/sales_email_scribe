@@ -34,16 +34,23 @@ def signup_view(request):
                     'domain': current_site.domain,
                     'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                     'token': account_activation_token.make_token(user),
+                    'protocol': 'http' if settings.DEBUG else 'https',
                 })
-                
-                # Send the email message
-                send_mail(
-                    subject, 
-                    message="Please use an HTML-compatible email client.", 
-                    from_email=settings.EMAIL_HOST_USER, 
-                    recipient_list=[user.email],
-                    html_message=message,
-                )
+
+                if settings.DEBUG:
+                    activation_url = f"http://{current_site.domain}/accounts/activate/{urlsafe_base64_encode(force_bytes(user.pk))}/{account_activation_token.make_token(user)}/"
+                    print("\n--- LOCALHOST: ACCOUNT ACTIVATION LINK ---")
+                    print(activation_url)
+                    print("-----------------------------------------\n")
+                else:
+                    # Send the email message
+                    send_mail(
+                        subject, 
+                        message="Please use an HTML-compatible email client.", 
+                        from_email=settings.EMAIL_HOST_USER, 
+                        recipient_list=[user.email],
+                        html_message=message,
+                    )
                 return render(request, 'accounts/activation_sent.html')
         except requests.exceptions.HTTPError:
         # Handles 404, 500, etc.

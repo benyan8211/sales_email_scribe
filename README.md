@@ -35,7 +35,7 @@ your terminal for the emails as they are integral for having a satisfying user e
 - In the root directory, find the ```sales_email_scribe``` folder, open it and then open the ```settings.py``` file
     - Change ```DEBUG=False``` to ```DEBUG=True```
     - Change ```ALLOWED_HOSTS = ['sales-email-scribe.onrender.com']``` to ```ALLOWED_HOSTS = ['sales-email-scribe.onrender.com', '127.0.0.1']```
-    - Change TIME_ZONE to the valid IANA time zone name corresponding to the time zone you are in
+    - Change ```TIME_ZONE``` to the valid IANA time zone name corresponding to the time zone that you are in
     - Save your changes
 
 #### Part 2: Create ```.env``` file and configure AI model

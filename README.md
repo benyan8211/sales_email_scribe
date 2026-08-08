@@ -22,6 +22,8 @@ This is an AI powered scribe that writes high quality, custom tailored sales ema
 
 After cloning the GitHub repository on your local machine, run this command in terminal: ```uv sync```
 
+Next, run this command: ```uv run python3 manage.py migrate```
+
 ### &#10145; Run the project locally:
 
 #### Part 1: Modify settings
@@ -35,7 +37,6 @@ After cloning the GitHub repository on your local machine, run this command in t
 
 - In the root directory, create a ```.env``` file
     - Add this as the first line of ```.env```: ```DJANGO_SECRET_KEY=key```
-    - Add this as the second line of ```.env```: ```DATABASE_URL=postgres://db_user:db_password@127.0.0.1:5432/db_name```
     - **Option 1:** Use OpenAI model (requires minimum $5 upfront):
         - Go to ```https://platform.openai.com/```
         - Create an account

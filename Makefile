@@ -20,7 +20,7 @@ migrate: ## Apply database migrations
 
 ## Code Quality & Testing
 test: ## Run the Django test suite using pytest
-	uv run pytest
+	uv run python3 manage.py test --settings=sales_email_scribe.settings_test
 
 lint: ## Run ruff checks
 	uv run ruff check .

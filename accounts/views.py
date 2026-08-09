@@ -54,21 +54,21 @@ def signup_view(request):
                 return render(request, 'accounts/activation_sent.html')
         except requests.exceptions.HTTPError:
         # Handles 404, 500, etc.
-            messages.error(request, """HTTP Request Failed!
-                Please try again later.""")
+            messages.error(request, ("HTTP Request Failed! "
+                "Please try again later."))
         except requests.exceptions.ConnectionError:
             # Handles network down, DNS failures
-            messages.error(request, """Failed to establish a connection
-                to the server! Please check your internet connection
-                and try again.""")
+            messages.error(request, ("Failed to establish a connection "
+                "to the server! Please check your internet connection "
+                "and try again."))
         except requests.exceptions.Timeout:
             # Handles slow/stalled API servers
-            messages.error(request, """The server is taking too long to respond.
-                Please try again later.""")
+            messages.error(request, ("The server is taking too long to respond. "
+                "Please try again later."))
         except requests.exceptions.RequestException:
             # Fallback catch-all for any requests-related error
-            messages.error(request, """An unexpected error occurred!
-                Please try again later.""")
+            messages.error(request, ("An unexpected error occurred! "
+                "Please try again later."))
     else:
         form = SignUpForm()
     return render(request, 'accounts/signup.html', {'form': form})
@@ -102,21 +102,21 @@ def login_view(request):
                     return HttpResponseRedirect("/")
         except requests.exceptions.HTTPError:
         # Handles 404, 500, etc.
-            messages.error(request, """HTTP Request Failed!
-                Please try again later.""")
+            messages.error(request, ("HTTP Request Failed! "
+                "Please try again later."))
         except requests.exceptions.ConnectionError:
             # Handles network down, DNS failures
-            messages.error(request, """Failed to establish a connection
-                to the server! Please check your internet connection
-                and try again.""")
+            messages.error(request, ("Failed to establish a connection "
+                "to the server! Please check your internet connection "
+                "and try again."))
         except requests.exceptions.Timeout:
             # Handles slow/stalled API servers
-            messages.error(request, """The server is taking too long to respond.
-                Please try again later.""")
+            messages.error(request, ("The server is taking too long to respond. "
+                "Please try again later."))
         except requests.exceptions.RequestException:
             # Fallback catch-all for any requests-related error
-            messages.error(request, """An unexpected error occurred!
-                Please try again later.""")
+            messages.error(request, ("An unexpected error occurred! "
+                "Please try again later."))
     else:
         form = LoginForm()
         form.fields['username'].label = "Email"

@@ -40,8 +40,8 @@ class BaseTemplateDirectUnitTest(SimpleTestCase):
         rendered_html = compiled_template.render(context)
 
         self.assertIn('Logged in as: test@example.com', rendered_html)
-        self.assertIn("""<a href="#" onclick="this.closest(\'form\').submit();
-            return false;">Log out</a>""", rendered_html
+        self.assertIn(('<a href="#" onclick="this.closest(\'form\').submit(); '
+            'return false;">Log out</a>'), rendered_html
         )
         self.assertIn('/static/images/sales_email_scribe_logo.png', rendered_html)
         self.assertIn('<p>Testing.</p>', rendered_html)

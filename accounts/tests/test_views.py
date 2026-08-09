@@ -126,8 +126,8 @@ class LoginViewTests(TestCase):
         self.assertEqual(len(messages), 1)
         self.assertEqual(
             str(messages[0]),
-            """Failed to establish a connection to the server!
-            Please check your internet connection and try again."""
+            ("Failed to establish a connection to the server! "
+            "Please check your internet connection and try again.")
         )
 
     @patch('accounts.views.authenticate')
@@ -329,8 +329,8 @@ class SignupViewTests(TestCase):
         self.assertEqual(len(messages), 1)
         self.assertEqual(
             str(messages[0]),
-            """Failed to establish a connection to the server!
-            Please check your internet connection and try again."""
+            ("Failed to establish a connection to the server! "
+            "Please check your internet connection and try again.")
         )
 
     @patch('accounts.views.send_mail')

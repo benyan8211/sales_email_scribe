@@ -25,6 +25,9 @@ test: ## Run the Django test suite using pytest
 lint: ## Run ruff checks
 	uv run ruff check .
 
+lint-fix: ## Run ruff checks and apply any fixes where appropriate
+	uv run ruff check --fix .
+
 format: ## Format code using ruff
 	uv run ruff format .
 

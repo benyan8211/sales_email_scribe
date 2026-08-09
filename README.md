@@ -63,10 +63,10 @@ your terminal for the emails as they are integral for having a satisfying user e
 
 #### Part 3: Boot up Sales Email Scribe
 
-- In the root directory, open a new terminal and run this command: ```uv run python3 manage.py runserver```
+- In the root directory, open a new terminal and run this command: ```make run```
 
 ### &#10145; Run unit tests:
 
 - In the root directory, open a new terminal and run this command: 
 
-```uv run python3 manage.py test --settings=sales_email_scribe.settings_test```
+```make test```

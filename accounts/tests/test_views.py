@@ -3,7 +3,11 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.messages import get_messages
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
+
 from unittest.mock import patch
+from ..tokens import account_activation_token
 import requests
 
 from accounts.views import signup_view
@@ -16,7 +20,8 @@ class LoginViewTests(TestCase):
         # Create a test user in the database
         self.user = User.objects.create_user(
             username="test@example.com", 
-            password="securepassword123"
+            password="securepassword123",
+            is_active=True
         )
 
     def test_get_request_renders_login_form(self):
@@ -261,3 +266,34 @@ class SignupViewTests(TestCase):
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(len(messages), 1)
         self.assertEqual(str(messages[0]), "An unexpected error occurred! Please try again later.")
+
+class ActivateViewTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.url_name = "activate"
+
+        # Create an inactive user for testing activation
+        self.user = User.objects.create_user(
+            username="test@example.com",
+            password="securepassword123",
+            is_active=False
+        )
+    
+    def test_successful_activation(self):
+        """A valid uid and token successfully activates the user."""
+        url = reverse(
+            self.url_name, 
+            kwargs={
+                "uidb64":  urlsafe_base64_encode(force_bytes(self.user.pk)), 
+                "token": account_activation_token.make_token(self.user)
+            }
+        )
+        response = self.client.get(url)
+
+        # Verify response and template
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "accounts/activation_success.html")
+
+        # Verify user state changed in database
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.is_active)

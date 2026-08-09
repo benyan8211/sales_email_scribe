@@ -1,19 +1,15 @@
 import os
-import requests
 
+from asgiref.sync import async_to_sync
 from django.conf import settings
-from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
-from django.template.loader import render_to_string
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
-
-from .forms import IntakeForm, AIFeedbackForm, UserExperienceFeedbackForm
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import render
+from django.template.loader import render_to_string
 from dotenv import load_dotenv
-from agents import Agent, Runner, trace
-from asgiref.sync import async_to_sync
 
+from .forms import AIFeedbackForm, IntakeForm, UserExperienceFeedbackForm
 from .utils import execute_sales_agent
 
 # Only loads locally if the file exists; does nothing on Render
@@ -31,78 +27,109 @@ def intake_form(request):
         del request.session['sales_email']
 
     is_returning = request.GET.get('edit') == 'true'
-    
+
     if is_returning and 'saved_form_data' in request.session:
         # Prepopulate only if they clicked the back button
         form = IntakeForm(request.session['saved_form_data'])
     else:
         form = IntakeForm()
-    
-    return render(request, 'scribe_prompt/intake_form.html', {'current_step': 1, 'form': form })
+
+    return render(
+        request,
+        'scribe_prompt/intake_form.html',
+        {
+            'current_step': 1,
+            'form': form
+        }
+    )
 
 def submit_form_view(request):
     if request.method == 'POST':
         form = IntakeForm(request.POST)
-        if form.is_valid():            
+        if form.is_valid():
             request.session['company_name'] = form.cleaned_data.get('company_name')
             request.session['product_name'] = form.cleaned_data.get('product_name')
-            request.session['product_details'] = form.cleaned_data.get('product_details')
+            request.session['product_details'] = (
+                form.cleaned_data.get('product_details')
+            )
             request.session['tone_of_email'] = form.cleaned_data.get('tone_of_email')
 
             request.session['saved_form_data'] = request.POST
             # Return a JSON response instead of a full HTML template
             return JsonResponse({
-                'success': True, 
+                'success': True,
                 'message': 'Form submitted successfully!'
             })
         else:
             # Return form validation errors to the JavaScript front-end
             return JsonResponse({
-                'success': False, 
-                'errors': form.errors.get_json_data() 
+                'success': False,
+                'errors': form.errors.get_json_data()
             }, status=400)
-            
-    return JsonResponse({'success': False, 'errors': 'Invalid request method'}, status=405)
+
+    return JsonResponse(
+        {
+            'success': False,
+            'errors': 'Invalid request method'
+        },
+        status=405
+    )
 
 @login_required(login_url='/accounts/login/')
 def review_and_feedback(request):
     form = AIFeedbackForm()
-    return render(request, 'scribe_prompt/review_and_feedback.html', { 'current_step': 2, 'form': form })
+    return render(
+        request,
+        'scribe_prompt/review_and_feedback.html',
+        {
+            'current_step': 2,
+            'form': form
+        }
+    )
 
 def give_ai_feedback_view(request):
     if request.method == 'POST':
         form = AIFeedbackForm(request.POST)
-        if form.is_valid():            
+        if form.is_valid():
             request.session['feedback_box'] = form.cleaned_data.get('feedback_box')
 
             # Return a JSON response instead of a full HTML template
             return JsonResponse({
-                'success': True, 
+                'success': True,
                 'message': 'Form is valid'
             })
         else:
             # Return form validation errors to the JavaScript front-end
             return JsonResponse({
-                'success': False, 
-                'errors': form.errors.get_json_data() 
+                'success': False,
+                'errors': form.errors.get_json_data()
             }, status=400)
-            
-    return JsonResponse({'success': False, 'errors': 'Invalid request method'}, status=405)
+
+    return JsonResponse(
+        {
+            'success': False,
+            'errors': 'Invalid request method'
+        },
+        status=405
+    )
 
 def slow_processing_view_with_feedback(request):
     company_name = request.session['company_name']
     product_name = request.session['product_name']
     sales_email = request.session['sales_email']
-    system_prompt = f"""You are a sales agent working for {company_name}, a company that is trying to sell {product_name}. 
+    system_prompt = f"""You are a sales agent working for {company_name}, a
+    company that is trying to sell {product_name}.
 
     Here is a sales email that you previously wrote:
     {sales_email}
 
-    The user wants you to write a new email. This new email should improve upon that previously written email by taking 
+    The user wants you to write a new email. This new email should improve upon that
+    previously written email by taking
     into account the following feedback:
     {request.session['feedback_box']}
 
-    Be sure to return your response in html. Make the email look aesthetically pleasing. Include the email's subject in a div that is center aligned.
+    Be sure to return your response in html. Make the email look aesthetically pleasing.
+    Include the email's subject in a div that is center aligned.
     Add a line break. Then include the html content within the body tag.
     """
 
@@ -124,14 +151,19 @@ def slow_processing_view(request):
     product_details = request.session['product_details']
     tone_of_email = request.session['tone_of_email']
     tone_of_email_description_catalog = {
-        "serious": """The tone of the sales email should be serious, and very professional.""",
-        "fun": """The tone of the sales email should be fun and lighthearted and contain mild humor.""",
-        "a_mix_of_both": """The tone of the sales email should be a mix of serious and fun. 
+        "serious": """The tone of the sales email should be serious, and
+        very professional.""",
+        "fun": """The tone of the sales email should be fun and lighthearted and
+        contain mild humor.""",
+        "a_mix_of_both": """The tone of the sales email should be a mix of
+        serious and fun.
         It should be professional, but also include hints of mild humor.""",
-        "i_am_not_sure": """The tone of the sales email has not been specified. Please use your best judgment."""
+        "i_am_not_sure": """The tone of the sales email has not been specified.
+        Please use your best judgment."""
     }
-    system_prompt = f"""You are a sales agent working for {company_name}, a company that is trying to sell {product_name}. 
-    
+    system_prompt = f"""You are a sales agent working for {company_name}, a company that
+    is trying to sell {product_name}.
+
     Here is a description of {product_name}:
     {product_details}
 
@@ -139,7 +171,8 @@ def slow_processing_view(request):
 
     {tone_of_email_description_catalog.get(tone_of_email)}
 
-    Be sure to return your response in html. Make the email look aesthetically pleasing. Include the email's subject in a div that is center aligned.
+    Be sure to return your response in html. Make the email look aesthetically pleasing.
+    Include the email's subject in a div that is center aligned.
     Add a line break. Then include the html content within the body tag.
     """
 
@@ -153,7 +186,11 @@ def slow_processing_view(request):
 @login_required(login_url='/accounts/login/')
 def confirmation(request):
     form = UserExperienceFeedbackForm()
-    return render(request, 'scribe_prompt/confirmation.html', { 'current_step': 3, 'form': form })
+    return render(
+        request,
+        'scribe_prompt/confirmation.html',
+        { 'current_step': 3, 'form': form }
+    )
 
 def send_ai_generated_email_to_user(request):
     user = request.user
@@ -167,22 +204,22 @@ def send_ai_generated_email_to_user(request):
 
     # Send the email message
     send_mail(
-        subject, 
-        message="Please use an HTML-compatible email client.", 
-        from_email=settings.EMAIL_HOST_USER, 
+        subject,
+        message="Please use an HTML-compatible email client.",
+        from_email=settings.EMAIL_HOST_USER,
         recipient_list=[user.email],
         html_message=message,
     )
 
     return JsonResponse({
-        'success': True, 
+        'success': True,
         'message': 'Form submitted successfully!'
     })
 
 def submit_feedback_form_view(request):
     if request.method == 'POST':
         form = UserExperienceFeedbackForm(request.POST)
-        if form.is_valid():            
+        if form.is_valid():
             feedback_instance = form.save(commit=False)
 
             feedback_instance.username = request.user.username
@@ -191,14 +228,20 @@ def submit_feedback_form_view(request):
 
             # Return a JSON response instead of a full HTML template
             return JsonResponse({
-                'success': True, 
+                'success': True,
                 'message': 'Form submitted successfully!'
             })
         else:
             # Return form validation errors to the JavaScript front-end
             return JsonResponse({
-                'success': False, 
-                'errors': form.errors.get_json_data() 
+                'success': False,
+                'errors': form.errors.get_json_data()
             }, status=400)
-            
-    return JsonResponse({'success': False, 'errors': 'Invalid request method'}, status=405)
+
+    return JsonResponse(
+        {
+            'success': False,
+            'errors': 'Invalid request method'
+        },
+        status=405
+    )

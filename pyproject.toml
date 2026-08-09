@@ -13,3 +13,35 @@ dependencies = [
     "python-dotenv>=1.2.2",
     "whitenoise>=6.12.0",
 ]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.16.2",
+]
+
+[tool.ruff]
+# Target your specific Python version
+target-version = "py312"
+# Match Black's default line length (or set to 100/120 if preferred)
+line-length = 88
+
+[tool.ruff.lint]
+# Enable standard rules plus the Django ruleset (DJ)
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes (bugs and unused code)
+    "I",   # isort (import sorting)
+    "DJ",  # Django-specific best practices
+]
+
+# Tell Ruff to ignore specific rules in auto-generated migrations
+[tool.ruff.lint.per-file-ignores]
+"**/migrations/*.py" = [
+    "E501", # Ignore long lines in migrations
+    "N806", # Ignore uppercase variable names in migration blocks
+]
+"**/apps.py" = [
+    "F401", # Ignore unused imports (essential if importing signals inside ready())
+]
+

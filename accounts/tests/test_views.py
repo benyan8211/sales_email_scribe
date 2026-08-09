@@ -1,9 +1,12 @@
 from django.test import TestCase, Client, RequestFactory
 from django.urls import reverse
 from django.contrib.auth.models import User
+from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.messages import get_messages
 from unittest.mock import patch
 import requests
+
+from accounts.views import signup_view
 
 class LoginViewTests(TestCase):
     def setUp(self):
@@ -82,7 +85,7 @@ class LoginViewTests(TestCase):
 
     @patch('accounts.views.authenticate')
     def test_connection_error_handling(self, mock_authenticate):
-        """When HTTPError arises, it should be handled properly."""
+        """When ConnectionError arises, it should be handled properly."""
         mock_authenticate.side_effect = requests.exceptions.ConnectionError()
         response = self.client.post(self.url, data=self.credentials)
         
@@ -92,7 +95,7 @@ class LoginViewTests(TestCase):
 
     @patch('accounts.views.authenticate')
     def test_timeout_error_handling(self, mock_authenticate):
-        """When HTTPError arises, it should be handled properly."""
+        """When Timeout arises, it should be handled properly."""
         mock_authenticate.side_effect = requests.exceptions.Timeout
         response = self.client.post(self.url, data=self.credentials)
         
@@ -102,7 +105,7 @@ class LoginViewTests(TestCase):
 
     @patch('accounts.views.authenticate')
     def test_request_error_handling(self, mock_authenticate):
-        """When HTTPError arises, it should be handled properly."""
+        """When RequestException arises, it should be handled properly."""
         mock_authenticate.side_effect = requests.exceptions.RequestException()
         response = self.client.post(self.url, data=self.credentials)
         
@@ -123,3 +126,135 @@ class SignupViewTests(TestCase):
         self.assertEqual(response.context['form'].fields['email'].label, "Email")
         self.assertEqual(response.context['form'].fields['password1'].label, "Password")
         self.assertEqual(response.context['form'].fields['password2'].label, "Password confirmation")
+
+    @patch('accounts.views.send_mail')
+    @patch('accounts.views.render_to_string')
+    @patch('accounts.views.account_activation_token.make_token')
+    @patch('accounts.views.urlsafe_base64_encode')
+    @patch('accounts.views.settings')
+    def test_signup_success_production(self, mock_settings, mock_uid_encode, mock_make_token, mock_render, mock_send_mail):
+        """Test successful POST signup under production settings (DEBUG=False)."""
+        mock_settings.DEBUG = False
+        mock_settings.EMAIL_HOST_USER = 'noreply@example.com'
+        mock_uid_encode.return_value = b'mocked_uid'
+        mock_make_token.return_value = 'mocked_token'
+        mock_render.return_value = 'rendered email html content'
+
+        valid_credentials = {"email": "user@example.com", "password1": "fTApdG5xs3hzhTJVPcnb", "password2": "fTApdG5xs3hzhTJVPcnb"}
+
+        request = self.factory.post(self.url, data=valid_credentials)
+        signup_view(request)
+
+        user = User.objects.get(email='user@example.com')
+        self.assertFalse(user.is_active)
+
+        mock_render.assert_called_once_with(
+            'accounts/activation_email.html',
+            {
+                'user': user,
+                'domain': get_current_site(request).domain,
+                'uid': b'mocked_uid',
+                'token': 'mocked_token',
+                'protocol': 'https'
+            }
+        )
+
+        mock_send_mail.assert_called_once_with(
+            '[Sales Email Scribe] Activate Your Account',
+            message="Please use an HTML-compatible email client.",
+            from_email='noreply@example.com',
+            recipient_list=[user.email],
+            html_message='rendered email html content'
+        )
+
+    @patch('accounts.views.print')
+    @patch('accounts.views.settings')
+    def test_signup_success_debug_mode(self, mock_settings, mock_print):
+        """Test successful POST signup under debug mode prints the activation link."""
+        mock_settings.DEBUG = True
+
+        valid_credentials = {"email": "user@example.com", "password1": "fTApdG5xs3hzhTJVPcnb", "password2": "fTApdG5xs3hzhTJVPcnb"}
+        
+        request = self.factory.post(self.url, data=valid_credentials)
+        signup_view(request)
+
+        user = User.objects.get(email='user@example.com')
+        self.assertFalse(user.is_active)
+
+        self.assertTrue(mock_print.called)
+
+        first_printed_text = mock_print.call_args_list[0][0][0]
+
+        self.assertEqual(first_printed_text, "\n--- LOCALHOST: ACCOUNT ACTIVATION LINK ---")
+
+    def test_empty_email_password1_and_password2_failure(self):
+        """Empty email, password1, and password2 should give error message."""
+        invalid_credentials = {'email': '', 'password1': '', 'password2': ''}
+        response = self.client.post(self.url, data=invalid_credentials)
+        error_dict = response.context['form'].errors.as_data()
+        self.assertEqual(error_dict['email'][0].message, "This field is required.")
+
+    def test_empty_password1_and_password2_failure(self):
+        """Empty password1, and password2 should give error message."""
+        invalid_credentials = {'email': 'user@example.com', 'password1': '', 'password2': ''}
+        response = self.client.post(self.url, data=invalid_credentials)
+        error_dict = response.context['form'].errors.as_data()
+        self.assertEqual(error_dict['password1'][0].message, "This field is required.")
+
+    def test_empty_password2_failure(self):
+        """Empty password2 should give error message."""
+        invalid_credentials = {'email': 'user@example.com', 'password1': 'fTApdG5xs3hzhTJVPcnb', 'password2': ''}
+        response = self.client.post(self.url, data=invalid_credentials)
+        error_dict = response.context['form'].errors.as_data()
+        self.assertEqual(error_dict['password2'][0].message, "This field is required.")
+
+    def test_password1_and_password2_mismatch_failure(self):
+        """Empty password2 should give error message."""
+        invalid_credentials = {'email': 'user@example.com', 'password1': 'fTApdG5xs3hzhTJVPcnb', 'password2': 'afTApdG5xs3hzhTJVPcnb'}
+        response = self.client.post(self.url, data=invalid_credentials)
+        error_dict = response.context['form'].errors.as_data()
+        self.assertEqual(error_dict['password2'][0].message, "The two password fields didn’t match.")
+
+    @patch('accounts.views.send_mail')
+    def test_http_error_handling(self, mock_send_mail):
+        """When HTTPError arises, it should be handled properly."""
+        mock_send_mail.side_effect = requests.exceptions.HTTPError()
+        valid_credentials = {"email": "user@example.com", "password1": "fTApdG5xs3hzhTJVPcnb", "password2": "fTApdG5xs3hzhTJVPcnb"}
+        response = self.client.post(self.url, data=valid_credentials)
+        
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(str(messages[0]), "HTTP Request Failed! Please try again later.")
+
+    @patch('accounts.views.send_mail')
+    def test_connection_error_handling(self, mock_send_mail):
+        """When ConnectionError arises, it should be handled properly."""
+        mock_send_mail.side_effect = requests.exceptions.ConnectionError()
+        valid_credentials = {"email": "user@example.com", "password1": "fTApdG5xs3hzhTJVPcnb", "password2": "fTApdG5xs3hzhTJVPcnb"}
+        response = self.client.post(self.url, data=valid_credentials)
+        
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(str(messages[0]), "Failed to establish a connection to the server! Please check your internet connection and try again.")
+
+    @patch('accounts.views.send_mail')
+    def test_timeout_error_handling(self, mock_send_mail):
+        """When Timeout arises, it should be handled properly."""
+        mock_send_mail.side_effect = requests.exceptions.Timeout
+        valid_credentials = {"email": "user@example.com", "password1": "fTApdG5xs3hzhTJVPcnb", "password2": "fTApdG5xs3hzhTJVPcnb"}
+        response = self.client.post(self.url, data=valid_credentials)
+        
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(str(messages[0]), "The server is taking too long to respond. Please try again later.")
+
+    @patch('accounts.views.send_mail')
+    def test_request_error_handling(self, mock_send_mail):
+        """When RequestException arises, it should be handled properly."""
+        mock_send_mail.side_effect = requests.exceptions.RequestException()
+        valid_credentials = {"email": "user@example.com", "password1": "fTApdG5xs3hzhTJVPcnb", "password2": "fTApdG5xs3hzhTJVPcnb"}
+        response = self.client.post(self.url, data=valid_credentials)
+        
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(str(messages[0]), "An unexpected error occurred! Please try again later.")

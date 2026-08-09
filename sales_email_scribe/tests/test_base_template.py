@@ -19,7 +19,7 @@ class BaseTemplateDirectUnitTest(SimpleTestCase):
         self.assertIn('<p>Testing.</p>', rendered_html)
 
     def test_base_html_renders_directly_user_is_authenticated(self):
-        """Test render of base.html with user not authenticated."""
+        """Test render of base.html with user is authenticated."""
 
         template_to_render = """
             {% extends "base.html" %}

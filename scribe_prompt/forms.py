@@ -8,19 +8,19 @@ class IntakeForm(forms.Form):
         max_length=100, help_text="Maximum 100 characters.",
         error_messages={"required": "Your company's name cannot be blank."})
 
-    product_name = forms.CharField(label="""What is the name of the product/service
-        you are trying to sell?""", max_length=100,
+    product_name = forms.CharField(label=("What is the name of the product/service "
+        "you are trying to sell?"), max_length=100,
         help_text="Maximum 100 characters.",
-        error_messages={"required": """Your company's product/service
-            name cannot be blank."""}
+        error_messages={"required": ("Your company's product/service "
+            "name cannot be blank.")}
     )
 
-    product_details = forms.CharField(label="""Please tell us more about what your
-        product does or about the service that you provide. Please be specific.""",
+    product_details = forms.CharField(label=("Please tell us more about what your "
+        "product does or about the service that you provide. Please be specific."),
         widget=forms.Textarea, max_length=2000,
         help_text="Maximum 2000 characters.",
-        error_messages={"required": """Your company's product/service
-            description cannot be blank."""
+        error_messages={"required": ("Your company's product/service "
+            "description cannot be blank.")
         }
     )
 
@@ -41,8 +41,8 @@ class IntakeForm(forms.Form):
     required_css_class = 'required'
 
 class AIFeedbackForm(forms.Form):
-    feedback_box = forms.CharField(label="""Please give the AI feedback on how it can
-        improve the email. Please be specific.""",
+    feedback_box = forms.CharField(label=("Please give the AI feedback on how it can "
+        "improve the email. Please be specific."),
         widget=forms.Textarea, max_length=2000,
         help_text="Maximum 2000 characters.",
         error_messages={"required": "AI feedback cannot be blank."})

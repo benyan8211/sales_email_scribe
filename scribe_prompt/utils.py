@@ -1,18 +1,7 @@
 import os
-import requests
 
-from django.conf import settings
-from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
-from django.template.loader import render_to_string
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.core.mail import send_mail
-
-from .forms import IntakeForm, AIFeedbackForm, UserExperienceFeedbackForm
-from dotenv import load_dotenv
 from agents import Agent, Runner, trace
-from asgiref.sync import async_to_sync
+from dotenv import load_dotenv
 
 # Only loads locally if the file exists; does nothing on Render
 if os.path.exists(".env"):

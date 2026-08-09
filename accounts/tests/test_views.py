@@ -284,7 +284,7 @@ class ActivateViewTests(TestCase):
         url = reverse(
             self.url_name, 
             kwargs={
-                "uidb64":  urlsafe_base64_encode(force_bytes(self.user.pk)), 
+                "uidb64": urlsafe_base64_encode(force_bytes(self.user.pk)), 
                 "token": account_activation_token.make_token(self.user)
             }
         )
@@ -297,3 +297,70 @@ class ActivateViewTests(TestCase):
         # Verify user state changed in database
         self.user.refresh_from_db()
         self.assertTrue(self.user.is_active)
+    
+    def test_invalid_token(self):
+        """An invalid token fails activation and keeps the user inactive."""
+        invalid_token = "invalid-token-123"
+        url = reverse(
+            self.url_name, 
+            kwargs={
+                "uidb64": urlsafe_base64_encode(force_bytes(self.user.pk)), 
+                "token": invalid_token
+            }
+        )
+        response = self.client.get(url)
+
+        # Verify response and template
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "accounts/activation_invalid.html")
+
+        # Verify user remains inactive
+        self.user.refresh_from_db()
+        self.assertFalse(self.user.is_active)
+    
+    def test_invalid_uid_user_does_not_exist(self):
+        """A uid decoding to a non-existent primary key fails activation."""
+        non_existent_uid = urlsafe_base64_encode(force_bytes(99999))
+        url = reverse(
+            self.url_name,
+            kwargs={
+                "uidb64": non_existent_uid, 
+                "token": account_activation_token.make_token(self.user)
+            }
+        )
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "accounts/activation_invalid.html")
+
+    def test_malformed_uidb64(self):
+        """A completely malformed uidb64 string handles the exception and fails gracefully."""
+        malformed_uid = "not-base64-encoded!!"
+        url = reverse(
+            self.url_name, kwargs={
+                "uidb64": malformed_uid, 
+                "token": account_activation_token.make_token(self.user)
+            }
+        )
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "accounts/activation_invalid.html")
+
+    def test_token_used_twice(self):
+        """A token cannot be reused after successful activation."""
+        url = reverse(
+            self.url_name, 
+            kwargs={
+                "uidb64": urlsafe_base64_encode(force_bytes(self.user.pk)), 
+                "token": account_activation_token.make_token(self.user)
+            }
+        )
+
+        # First attempt (Success)
+        response1 = self.client.get(url)
+        self.assertTemplateUsed(response1, "accounts/activation_success.html")
+
+        # Second attempt (Fail)
+        response2 = self.client.get(url)
+        self.assertTemplateUsed(response2, "accounts/activation_invalid.html")

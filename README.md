@@ -67,6 +67,4 @@ your terminal for the emails as they are integral for having a satisfying user e
 
 ### &#10145; Run unit tests:
 
-- In the root directory, open a new terminal and run this command: 
-
-```make test```
+- In the root directory, open a new terminal and run this command: ```make test```

@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.messages import get_messages
+from django.contrib.sessions.middleware import SessionMiddleware
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 
@@ -10,7 +11,7 @@ from unittest.mock import patch
 from ..tokens import account_activation_token
 import requests
 
-from accounts.views import signup_view
+from accounts.views import signup_view, logout_view
 
 class LoginViewTests(TestCase):
     def setUp(self):
@@ -364,3 +365,28 @@ class ActivateViewTests(TestCase):
         # Second attempt (Fail)
         response2 = self.client.get(url)
         self.assertTemplateUsed(response2, "accounts/activation_invalid.html")
+
+class LogoutViewTests(TestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
+        self.user = User.objects.create_user(
+            username='testuser', 
+            password='testpassword123'
+        )
+
+    def test_authenticated_user_can_logout(self):
+        request = self.factory.get('/logout/')
+        request.user = self.user
+
+        middleware = SessionMiddleware(get_response=lambda r: None)
+        middleware.process_request(request)
+        request.session.save()
+
+        response = logout_view(request)
+
+        # Assert that the user is redirected to the login page
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse('login'))
+        
+        # Assert that the user is no longer authenticated
+        self.assertFalse(request.user.is_authenticated)

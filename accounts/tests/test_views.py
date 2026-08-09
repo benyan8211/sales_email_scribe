@@ -12,12 +12,11 @@ class LoginViewTests(TestCase):
     def setUp(self):
         self.client = Client()
         self.url = reverse('login') 
-        self.credentials = {'username': 'test@example.com', 'password': 'securepassword123'}
         
         # Create a test user in the database
         self.user = User.objects.create_user(
-            username=self.credentials['username'], 
-            password=self.credentials['password']
+            username="test@example.com", 
+            password="securepassword123"
         )
 
     def test_get_request_renders_login_form(self):
@@ -35,8 +34,8 @@ class LoginViewTests(TestCase):
         # Setup mock user and authentication success
         mock_user = object() 
         mock_authenticate.return_value = mock_user
-
-        response = self.client.post(self.url, data=self.credentials)
+        valid_credentials = {'username': 'test@example.com', 'password': 'securepassword123'}
+        response = self.client.post(self.url, data=valid_credentials)
         
         mock_authenticate.assert_called_once_with(
             username='test@example.com', 
@@ -77,7 +76,8 @@ class LoginViewTests(TestCase):
     def test_http_error_handling(self, mock_authenticate):
         """When HTTPError arises, it should be handled properly."""
         mock_authenticate.side_effect = requests.exceptions.HTTPError()
-        response = self.client.post(self.url, data=self.credentials)
+        valid_credentials = {'username': 'test@example.com', 'password': 'securepassword123'}
+        response = self.client.post(self.url, data=valid_credentials)
         
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(len(messages), 1)
@@ -87,7 +87,8 @@ class LoginViewTests(TestCase):
     def test_connection_error_handling(self, mock_authenticate):
         """When ConnectionError arises, it should be handled properly."""
         mock_authenticate.side_effect = requests.exceptions.ConnectionError()
-        response = self.client.post(self.url, data=self.credentials)
+        valid_credentials = {'username': 'test@example.com', 'password': 'securepassword123'}
+        response = self.client.post(self.url, data=valid_credentials)
         
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(len(messages), 1)
@@ -97,7 +98,8 @@ class LoginViewTests(TestCase):
     def test_timeout_error_handling(self, mock_authenticate):
         """When Timeout arises, it should be handled properly."""
         mock_authenticate.side_effect = requests.exceptions.Timeout
-        response = self.client.post(self.url, data=self.credentials)
+        valid_credentials = {'username': 'test@example.com', 'password': 'securepassword123'}
+        response = self.client.post(self.url, data=valid_credentials)
         
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(len(messages), 1)
@@ -107,7 +109,8 @@ class LoginViewTests(TestCase):
     def test_request_error_handling(self, mock_authenticate):
         """When RequestException arises, it should be handled properly."""
         mock_authenticate.side_effect = requests.exceptions.RequestException()
-        response = self.client.post(self.url, data=self.credentials)
+        valid_credentials = {'username': 'test@example.com', 'password': 'securepassword123'}
+        response = self.client.post(self.url, data=valid_credentials)
         
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(len(messages), 1)

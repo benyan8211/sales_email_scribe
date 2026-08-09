@@ -22,7 +22,7 @@ This is an AI powered scribe that writes high quality, custom tailored sales ema
 
 After cloning the GitHub repository on your local machine, run this command in terminal: ```uv sync```
 
-Next, run this command: ```uv run python3 manage.py migrate```
+Next, run this command: ```make migrate```
 
 ### &#10145; Run the project locally:
 

@@ -1,19 +1,19 @@
 import requests
-
 from django.conf import settings
-from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from django.utils.encoding import force_bytes, force_str
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
+from django.http import HttpResponseRedirect
+from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
-from .forms import SignUpForm, LoginForm
+from .forms import LoginForm, SignUpForm
 from .tokens import account_activation_token
+
 
 def signup_view(request):
     if request.method == 'POST':
@@ -23,11 +23,11 @@ def signup_view(request):
                 user = form.save(commit=False)
                 user.is_active = False  # Deactivate account until email verification
                 user.save()
-                
+
                 # Gather domain details to construct the verification URL
                 current_site = get_current_site(request)
                 subject = '[Sales Email Scribe] Activate Your Account'
-                
+
                 # Render the email text body from a template
                 message = render_to_string('accounts/activation_email.html', {
                     'user': user,
@@ -45,25 +45,30 @@ def signup_view(request):
                 else:
                     # Send the email message
                     send_mail(
-                        subject, 
-                        message="Please use an HTML-compatible email client.", 
-                        from_email=settings.EMAIL_HOST_USER, 
+                        subject,
+                        message="Please use an HTML-compatible email client.",
+                        from_email=settings.EMAIL_HOST_USER,
                         recipient_list=[user.email],
                         html_message=message,
                     )
                 return render(request, 'accounts/activation_sent.html')
         except requests.exceptions.HTTPError:
         # Handles 404, 500, etc.
-            messages.error(request, f"HTTP Request Failed! Please try again later.")
+            messages.error(request, """HTTP Request Failed!
+                Please try again later.""")
         except requests.exceptions.ConnectionError:
             # Handles network down, DNS failures
-            messages.error(request, "Failed to establish a connection to the server! Please check your internet connection and try again.")
+            messages.error(request, """Failed to establish a connection
+                to the server! Please check your internet connection
+                and try again.""")
         except requests.exceptions.Timeout:
             # Handles slow/stalled API servers
-            messages.error(request, "The server is taking too long to respond. Please try again later.")
-        except requests.exceptions.RequestException as err:
+            messages.error(request, """The server is taking too long to respond.
+                Please try again later.""")
+        except requests.exceptions.RequestException:
             # Fallback catch-all for any requests-related error
-            messages.error(request, "An unexpected error occurred! Please try again later.") 
+            messages.error(request, """An unexpected error occurred!
+                Please try again later.""")
     else:
         form = SignUpForm()
     return render(request, 'accounts/signup.html', {'form': form})
@@ -89,7 +94,6 @@ def login_view(request):
             form = LoginForm(request, data=request.POST)
             form.fields['username'].label = "Email"
             if form.is_valid():
-                # The user enters an email, but Django processes it in the username field
                 username = form.cleaned_data.get('username')
                 password = form.cleaned_data.get('password')
                 user = authenticate(username=username, password=password)
@@ -98,16 +102,21 @@ def login_view(request):
                     return HttpResponseRedirect("/")
         except requests.exceptions.HTTPError:
         # Handles 404, 500, etc.
-            messages.error(request, f"HTTP Request Failed! Please try again later.")
+            messages.error(request, """HTTP Request Failed!
+                Please try again later.""")
         except requests.exceptions.ConnectionError:
             # Handles network down, DNS failures
-            messages.error(request, "Failed to establish a connection to the server! Please check your internet connection and try again.")
+            messages.error(request, """Failed to establish a connection
+                to the server! Please check your internet connection
+                and try again.""")
         except requests.exceptions.Timeout:
             # Handles slow/stalled API servers
-            messages.error(request, "The server is taking too long to respond. Please try again later.")
-        except requests.exceptions.RequestException as err:
+            messages.error(request, """The server is taking too long to respond.
+                Please try again later.""")
+        except requests.exceptions.RequestException:
             # Fallback catch-all for any requests-related error
-            messages.error(request, "An unexpected error occurred! Please try again later.") 
+            messages.error(request, """An unexpected error occurred!
+                Please try again later.""")
     else:
         form = LoginForm()
         form.fields['username'].label = "Email"
@@ -117,4 +126,3 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
-

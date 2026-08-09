@@ -24,6 +24,7 @@ dev = [
 target-version = "py312"
 # Match Black's default line length (or set to 100/120 if preferred)
 line-length = 88
+exclude = ["settings.py", "settings_test.py"]
 
 [tool.ruff.lint]
 # Enable standard rules plus the Django ruleset (DJ)
@@ -44,4 +45,3 @@ select = [
 "**/apps.py" = [
     "F401", # Ignore unused imports (essential if importing signals inside ready())
 ]
-

@@ -1,15 +1,15 @@
 from django import forms
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.forms import AuthenticationForm
 from django.core.exceptions import ValidationError
+
 
 class SignUpForm(UserCreationForm):
     email = forms.EmailField(required=True, label="Email")
 
     class Meta:
         model = User
-        fields = ['email', 'password1', 'password2'] # This removes the username input field from the UI
+        fields = ['email', 'password1', 'password2']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -18,11 +18,11 @@ class SignUpForm(UserCreationForm):
 
     def clean_email(self):
         email = self.cleaned_data.get("email")
-        
+
         # Check if any user already has this email in the database
         if User.objects.filter(email=email).exists():
             raise ValidationError("A user with this email already exists.")
-            
+
         return email
 
     def save(self, commit=True):

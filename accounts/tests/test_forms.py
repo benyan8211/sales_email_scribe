@@ -1,7 +1,8 @@
-from django.test import TestCase
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
+from django.test import TestCase
+
 from accounts.forms import SignUpForm
+
 
 class SignUpFormTest(TestCase):
     def test_form_valid_data(self):
@@ -22,7 +23,7 @@ class SignUpFormTest(TestCase):
             'password2': 'securepass123'
         }
         form = SignUpForm(data=data)
-        
+
         self.assertFalse(form.is_valid())
         self.assertIn('email', form.errors)
         self.assertEqual(form.errors['email'][0], "This field is required.")
@@ -35,7 +36,7 @@ class SignUpFormTest(TestCase):
             'password2': 'securepassword123'
         }
         form = SignUpForm(data=data)
-        
+
         self.assertFalse(form.is_valid())
         self.assertIn('password1', form.errors)
         self.assertEqual(form.errors['password1'][0], "This field is required.")
@@ -48,7 +49,7 @@ class SignUpFormTest(TestCase):
             'password2': ''
         }
         form = SignUpForm(data=data)
-        
+
         self.assertFalse(form.is_valid())
         self.assertIn('password2', form.errors)
         self.assertEqual(form.errors['password2'][0], "This field is required.")
@@ -61,10 +62,13 @@ class SignUpFormTest(TestCase):
             'password2': 'securepassword1234'
         }
         form = SignUpForm(data=data)
-        
+
         self.assertFalse(form.is_valid())
         self.assertIn('password2', form.errors)
-        self.assertEqual(form.errors['password2'][0], "The two password fields didn’t match.")
+        self.assertEqual(
+            form.errors['password2'][0],
+            "The two password fields didn’t match."
+        )
 
     def test_password_help_text_removed(self):
         """Verify that password2 help_text is removed during initialization."""
@@ -75,24 +79,27 @@ class SignUpFormTest(TestCase):
         """Ensure clean_email raises a ValidationError if the email already exists."""
         # Create an existing user with the target email
         User.objects.create_user(
-            username='existing_user@example.com', 
-            email='existing_user@example.com', 
+            username='existing_user@example.com',
+            email='existing_user@example.com',
             password='password123'
         )
-        
+
         data = {
             'email': 'existing_user@example.com',
             'password1': 'newpassword123',
             'password2': 'newpassword123'
         }
         form = SignUpForm(data=data)
-        
+
         self.assertFalse(form.is_valid())
         self.assertIn('email', form.errors)
-        self.assertEqual(form.errors['email'][0], "A user with this email already exists.")
+        self.assertEqual(
+            form.errors['email'][0],
+            "A user with this email already exists."
+        )
 
     def test_save_sets_username_as_email(self):
-        """Verify the custom save method maps the email string onto the username field."""
+        """Verify emails maps onto the username field."""
         data = {
             'email': 'unique_email@example.com',
             'password1': 'securepass123',
@@ -101,7 +108,7 @@ class SignUpFormTest(TestCase):
         form = SignUpForm(data=data)
         self.assertTrue(form.is_valid())
         user = form.save()
-        
+
         self.assertEqual(user.username, 'unique_email@example.com')
         self.assertEqual(user.email, 'unique_email@example.com')
         self.assertTrue(User.objects.filter(email='unique_email@example.com').exists())

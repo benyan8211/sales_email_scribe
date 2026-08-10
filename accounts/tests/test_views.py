@@ -30,6 +30,7 @@ class LoginViewTests(TestCase):
     def test_get_request_renders_login_form(self):
         """Should render the login form properly."""
         response = self.client.get(self.url)
+
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'accounts/login.html')
         self.assertEqual(response.context['form'].fields['username'].label, "Email")
@@ -59,6 +60,7 @@ class LoginViewTests(TestCase):
         """Empty username and password should give error message."""
         invalid_credentials = {'username': '', 'password': ''}
         response = self.client.post(self.url, data=invalid_credentials)
+
         error_dict = response.context['form'].errors.as_data()
         self.assertEqual(error_dict['username'][0].message, "This field is required.")
 
@@ -66,6 +68,7 @@ class LoginViewTests(TestCase):
         """A username entered, but a password left empty will result in an error."""
         invalid_credentials = {'username': 'test@example.com', 'password': ''}
         response = self.client.post(self.url, data=invalid_credentials)
+
         error_dict = response.context['form'].errors.as_data()
         self.assertEqual(error_dict['password'][0].message, "This field is required.")
 
@@ -76,6 +79,7 @@ class LoginViewTests(TestCase):
             'password': 'myexamplepasswordmy'
         }
         response = self.client.post(self.url, data=invalid_credentials)
+
         error_dict = response.context['form'].errors.as_data()
         self.assertEqual(
             error_dict['__all__'][0].message,
@@ -89,6 +93,7 @@ class LoginViewTests(TestCase):
             'password': 'securepasswordx'
         }
         response = self.client.post(self.url, data=invalid_credentials)
+
         error_dict = response.context['form'].errors.as_data()
         self.assertEqual(
             error_dict['__all__'][0].message,
@@ -172,6 +177,7 @@ class SignupViewTests(TestCase):
     def test_get_request_renders_signup_form(self):
         """Should render the signup form properly."""
         response = self.client.get(self.url)
+
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'accounts/signup.html')
         self.assertEqual(response.context['form'].fields['email'].label, "Email")
@@ -206,7 +212,6 @@ class SignupViewTests(TestCase):
 
         user = User.objects.get(email='user@example.com')
         self.assertFalse(user.is_active)
-
         mock_render.assert_called_once_with(
             'accounts/activation_email.html',
             {
@@ -217,7 +222,6 @@ class SignupViewTests(TestCase):
                 'protocol': 'https'
             }
         )
-
         mock_send_mail.assert_called_once_with(
             '[Sales Email Scribe] Activate Your Account',
             message="Please use an HTML-compatible email client.",
@@ -243,11 +247,8 @@ class SignupViewTests(TestCase):
 
         user = User.objects.get(email='user@example.com')
         self.assertFalse(user.is_active)
-
         self.assertTrue(mock_print.called)
-
         first_printed_text = mock_print.call_args_list[0][0][0]
-
         self.assertEqual(
             first_printed_text,
             "\n--- LOCALHOST: ACCOUNT ACTIVATION LINK ---"
@@ -257,6 +258,7 @@ class SignupViewTests(TestCase):
         """Empty email, password1, and password2 should give error message."""
         invalid_credentials = {'email': '', 'password1': '', 'password2': ''}
         response = self.client.post(self.url, data=invalid_credentials)
+
         error_dict = response.context['form'].errors.as_data()
         self.assertEqual(error_dict['email'][0].message, "This field is required.")
 
@@ -268,6 +270,7 @@ class SignupViewTests(TestCase):
             'password2': ''
         }
         response = self.client.post(self.url, data=invalid_credentials)
+
         error_dict = response.context['form'].errors.as_data()
         self.assertEqual(error_dict['password1'][0].message, "This field is required.")
 
@@ -279,6 +282,7 @@ class SignupViewTests(TestCase):
             'password2': ''
         }
         response = self.client.post(self.url, data=invalid_credentials)
+
         error_dict = response.context['form'].errors.as_data()
         self.assertEqual(error_dict['password2'][0].message, "This field is required.")
 
@@ -290,6 +294,7 @@ class SignupViewTests(TestCase):
             'password2': 'afTApdG5xs3hzhTJVPcnb'
         }
         response = self.client.post(self.url, data=invalid_credentials)
+
         error_dict = response.context['form'].errors.as_data()
         self.assertEqual(
             error_dict['password2'][0].message,
@@ -392,11 +397,8 @@ class ActivateViewTests(TestCase):
         )
         response = self.client.get(url)
 
-        # Verify response and template
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "accounts/activation_success.html")
-
-        # Verify user state changed in database
         self.user.refresh_from_db()
         self.assertTrue(self.user.is_active)
 
@@ -412,11 +414,8 @@ class ActivateViewTests(TestCase):
         )
         response = self.client.get(url)
 
-        # Verify response and template
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "accounts/activation_invalid.html")
-
-        # Verify user remains inactive
         self.user.refresh_from_db()
         self.assertFalse(self.user.is_active)
 
@@ -460,11 +459,9 @@ class ActivateViewTests(TestCase):
             }
         )
 
-        # First attempt (Success)
         response1 = self.client.get(url)
         self.assertTemplateUsed(response1, "accounts/activation_success.html")
 
-        # Second attempt (Fail)
         response2 = self.client.get(url)
         self.assertTemplateUsed(response2, "accounts/activation_invalid.html")
 
@@ -486,9 +483,6 @@ class LogoutViewTests(TestCase):
 
         response = logout_view(request)
 
-        # Assert that the user is redirected to the login page
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('login'))
-
-        # Assert that the user is no longer authenticated
         self.assertFalse(request.user.is_authenticated)

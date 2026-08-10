@@ -13,6 +13,7 @@ class SignUpFormTest(TestCase):
             'password2': 'securepassword123'
         }
         form = SignUpForm(data=data)
+
         self.assertTrue(form.is_valid())
 
     def test_empty_email_field_fails_validation(self):
@@ -73,6 +74,7 @@ class SignUpFormTest(TestCase):
     def test_password_help_text_removed(self):
         """Verify that password2 help_text is removed during initialization."""
         form = SignUpForm()
+
         self.assertIsNone(form.fields['password2'].help_text)
 
     def test_clean_email_duplicate_throws_error(self):
@@ -106,9 +108,9 @@ class SignUpFormTest(TestCase):
             'password2': 'securepass123'
         }
         form = SignUpForm(data=data)
+
         self.assertTrue(form.is_valid())
         user = form.save()
-
         self.assertEqual(user.username, 'unique_email@example.com')
         self.assertEqual(user.email, 'unique_email@example.com')
         self.assertTrue(User.objects.filter(email='unique_email@example.com').exists())

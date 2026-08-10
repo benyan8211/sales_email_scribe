@@ -5,10 +5,8 @@ from django.contrib.sessions.middleware import SessionMiddleware
 from django.http import JsonResponse
 from django.test import Client, RequestFactory, SimpleTestCase, TestCase
 from django.urls import reverse
-from unittest.mock import MagicMock, patch
 
 from ..views import intake_form, submit_form_view
-from ..forms import IntakeForm
 
 
 class TestStartingPageView(SimpleTestCase):
@@ -148,15 +146,18 @@ class SubmitFormViewTests(TestCase):
         self.client = Client()
 
     def test_successful_form_submission(self):
-        """A valid POST request saves data to the session and returns a 200 JSON success response."""
+        """A valid POST saves data to session and returns success message."""
         valid_form_submission_data = {
             'company_name': 'Acme Corp',
             'product_name': 'Widget X',
             'product_details': 'A highly efficient widget.',
             'tone_of_email': 'serious'
         }
-        request = self.factory.post('/submit-form-view/', data=valid_form_submission_data)
-        
+        request = self.factory.post(
+            '/submit-form-view/',
+            data=valid_form_submission_data
+        )
+
         request.session = self.client.session
 
         response = submit_form_view(request)
@@ -172,12 +173,18 @@ class SubmitFormViewTests(TestCase):
 
         self.assertEqual(request.session['company_name'], 'Acme Corp')
         self.assertEqual(request.session['product_name'], 'Widget X')
-        self.assertEqual(request.session['product_details'], 'A highly efficient widget.')
+        self.assertEqual(
+            request.session['product_details'],
+            'A highly efficient widget.'
+        )
         self.assertEqual(request.session['tone_of_email'], 'serious')
-        self.assertEqual(request.session['saved_form_data']['company_name'], 'Acme Corp')
+        self.assertEqual(
+            request.session['saved_form_data']['company_name'],
+            'Acme Corp'
+        )
 
     def test_invalid_form_submission(self):
-        """An invalid POST request returns a 400 JSON error response containing form validation errors."""
+        """An invalid form submission returns error"""
         invalid_data = {}
         request = self.factory.post('/submit-form-view/', data=invalid_data)
         request.session = self.client.session
@@ -192,11 +199,11 @@ class SubmitFormViewTests(TestCase):
         response_data = json.loads(response.content)
         self.assertFalse(response_data['success'])
         self.assertIn('errors', response_data)
-    
+
     def test_invalid_request_method_get(self):
         """A GET request is rejected with a 405 status code and error message."""
         request = self.factory.get('/submit-form-view/')
-        
+
         response = submit_form_view(request)
 
         # Assert response status and type

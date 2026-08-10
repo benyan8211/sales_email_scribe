@@ -1,12 +1,13 @@
 import json
+from unittest.mock import MagicMock, patch
 
 from django.contrib.auth.models import AnonymousUser, User
 from django.contrib.sessions.middleware import SessionMiddleware
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.test import Client, RequestFactory, SimpleTestCase, TestCase
 from django.urls import reverse
 
-from ..views import intake_form, submit_form_view
+from ..views import intake_form, slow_processing_view, submit_form_view
 
 
 class TestStartingPageView(SimpleTestCase):
@@ -157,20 +158,15 @@ class SubmitFormViewTests(TestCase):
             '/submit-form-view/',
             data=valid_form_submission_data
         )
-
         request.session = self.client.session
 
         response = submit_form_view(request)
 
-        # Assert response status and type
         self.assertIsInstance(response, JsonResponse)
         self.assertEqual(response.status_code, 200)
-
-        # Assert JSON payload content
         response_data = json.loads(response.content)
         self.assertTrue(response_data['success'])
         self.assertEqual(response_data['message'], 'Form submitted successfully!')
-
         self.assertEqual(request.session['company_name'], 'Acme Corp')
         self.assertEqual(request.session['product_name'], 'Widget X')
         self.assertEqual(
@@ -191,11 +187,8 @@ class SubmitFormViewTests(TestCase):
 
         response = submit_form_view(request)
 
-        # Assert response status and type
         self.assertIsInstance(response, JsonResponse)
         self.assertEqual(response.status_code, 400)
-
-        # Assert JSON payload content structure
         response_data = json.loads(response.content)
         self.assertFalse(response_data['success'])
         self.assertIn('errors', response_data)
@@ -206,11 +199,46 @@ class SubmitFormViewTests(TestCase):
 
         response = submit_form_view(request)
 
-        # Assert response status and type
         self.assertIsInstance(response, JsonResponse)
         self.assertEqual(response.status_code, 405)
-
-        # Assert JSON payload content
         response_data = json.loads(response.content)
         self.assertFalse(response_data['success'])
         self.assertEqual(response_data['errors'], 'Invalid request method')
+
+class SlowProcessingViewTests(TestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
+
+    @patch('scribe_prompt.views.execute_sales_agent',
+        new_callable=MagicMock)
+    @patch('scribe_prompt.views.async_to_sync')
+    def test_slow_processing_view_success(self,
+        mock_async_to_sync, mock_execute_sales_agent):
+        """Test that the view executes successfully"""
+        mock_generated_email = ("<html><body><div style='text-align:center;'>"
+            "Subject: Unit Test</div><br><p>Content</p></body></html>")
+
+        mock_async_to_sync.return_value = mock_execute_sales_agent
+        mock_execute_sales_agent.return_value = mock_generated_email
+
+        session_data = {
+            'company_name': 'Acme Corp',
+            'product_name': 'Widget X',
+            'product_details': 'A highly efficient widget.',
+            'tone_of_email': 'serious'
+        }
+        request = self.factory.get('/slow-processing/')
+        request.session = session_data.copy()
+
+        response = slow_processing_view(request)
+
+        self.assertIsInstance(response, HttpResponse)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(mock_generated_email, response.content.decode())
+        self.assertEqual(request.session['sales_email'], mock_generated_email)
+        mock_async_to_sync.assert_called_once()
+        called_prompt = mock_execute_sales_agent.call_args[0][0]
+        self.assertIn("Acme Corp", called_prompt)
+        self.assertIn("Widget X", called_prompt)
+        self.assertIn("highly efficient", called_prompt)
+        self.assertIn("serious", called_prompt)

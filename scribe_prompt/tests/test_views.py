@@ -101,3 +101,37 @@ class IntakeFormViewTests(TestCase):
         self.assertIn(('<input type="radio" name="tone_of_email" value="i_am_not_sure" '
             'id="id_tone_of_email_3" required>'), html_content)
         self.assertIn('<button>Next</button>', html_content)
+
+    def test_prepopulates_form_when_returning_with_saved_data(self):
+        """Ensures form loads with saved data when edit=true and session data exists."""
+        request = self.factory.get(f"{self.url}?edit=true")
+        request.user = self.user
+        self._add_session_to_request(request)
+
+        mock_form_data = {
+            'company_name': 'Test Company LLC',
+            'product_name': 'Test Product Pro Max',
+            'product_details': 'Test Product Pro Max does everything pro to the max!',
+            'tone_of_email': 'fun'
+        }
+        request.session['saved_form_data'] = mock_form_data
+        request.session.save()
+
+        response = intake_form(request)
+
+        html_content = response.content.decode('utf-8')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(('<input type="text" name="company_name" '
+            'value="Test Company LLC" '
+            'maxlength="100" required aria-describedby="id_company_name_helptext" '
+            'id="id_company_name">'), html_content)
+        self.assertIn(('<input type="text" name="product_name" value="Test Product '
+            'Pro Max" maxlength="100" required aria-describedby='
+            '"id_product_name_helptext" id="id_product_name">'), html_content)
+        self.assertIn(('<textarea name="product_details" cols="40" rows="10" '
+            'maxlength="2000" required aria-describedby="id_product_details_helptext" '
+            'id="id_product_details">\nTest Product Pro Max does everything pro to '
+            'the max!</textarea>'), html_content)
+        self.assertIn(('<input type="radio" name="tone_of_email" value="fun" '
+            'id="id_tone_of_email_1" required checked>'), html_content)

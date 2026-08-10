@@ -9,6 +9,7 @@ from django.urls import reverse
 
 from ..views import (
     intake_form,
+    review_and_feedback,
     slow_processing_view,
     slow_processing_view_with_feedback,
     submit_form_view,
@@ -209,6 +210,44 @@ class SubmitFormViewTests(TestCase):
         response_data = json.loads(response.content)
         self.assertFalse(response_data['success'])
         self.assertEqual(response_data['errors'], 'Invalid request method')
+
+class ReviewAndFeedbackTests(TestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
+        self.user = User.objects.create_user(
+            username='test@example.com',
+            password='securepassword123'
+        )
+        self.url = reverse('review-and-feedback')
+
+    def _add_session_to_request(self, request):
+        """Helper to add session support to RequestFactory requests."""
+        middleware = SessionMiddleware(get_response=lambda r: None)
+        middleware.process_request(request)
+        request.session.save()
+
+    def test_login_required_redirects_anonymous_user(self):
+        """Ensures unauthenticated users are redirected to the login page."""
+        request = self.factory.get(self.url)
+        request.user = AnonymousUser()
+        self._add_session_to_request(request)
+
+        response = intake_form(request)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith('/accounts/login/'))
+
+    def test_review_and_feedback_renders_successfully(self):
+        request = self.factory.get(self.url)
+        request.user = self.user
+        self._add_session_to_request(request)
+
+        response = review_and_feedback(request)
+
+        html_content = response.content.decode('utf-8')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(('<div class="spinner"></div>'), html_content)
 
 class SlowProcessingViewTests(TestCase):
     def setUp(self):

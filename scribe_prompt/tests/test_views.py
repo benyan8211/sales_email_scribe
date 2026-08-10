@@ -7,7 +7,12 @@ from django.http import HttpResponse, JsonResponse
 from django.test import Client, RequestFactory, SimpleTestCase, TestCase
 from django.urls import reverse
 
-from ..views import intake_form, slow_processing_view, submit_form_view
+from ..views import (
+    intake_form,
+    slow_processing_view,
+    slow_processing_view_with_feedback,
+    submit_form_view,
+)
 
 
 class TestStartingPageView(SimpleTestCase):
@@ -242,3 +247,44 @@ class SlowProcessingViewTests(TestCase):
         self.assertIn("Widget X", called_prompt)
         self.assertIn("highly efficient", called_prompt)
         self.assertIn("serious", called_prompt)
+
+class SlowProcessingViewWithFeedbackTests(TestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
+
+    @patch('scribe_prompt.views.execute_sales_agent',
+        new_callable=MagicMock)
+    @patch('scribe_prompt.views.async_to_sync')
+    def test_slow_processing_view_success(self,
+        mock_async_to_sync, mock_execute_sales_agent):
+        """Test that the view executes successfully"""
+        mock_generated_email = ("<html><body><div style='text-align:center;'>"
+            "Subject: Unit Test</div><br><p>Content with Feedback</p></body></html>")
+
+        mock_async_to_sync.return_value = mock_execute_sales_agent
+        mock_execute_sales_agent.return_value = mock_generated_email
+
+        session_data = {
+            'company_name': 'Acme Corp',
+            'product_name': 'Widget X',
+            'product_details': 'A highly efficient widget.',
+            'tone_of_email': 'serious',
+            'sales_email': ("<html><body><div style='text-align:center;'>"
+            "Subject: Unit Test</div><br><p>Content</p></body></html>"),
+            'feedback_box': 'Mention that the cost is $100/month'
+        }
+        request = self.factory.get('/slow-processing-with-feedback/')
+        request.session = session_data.copy()
+
+        response = slow_processing_view_with_feedback(request)
+
+        self.assertIsInstance(response, HttpResponse)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(mock_generated_email, response.content.decode())
+        self.assertEqual(request.session['sales_email'], mock_generated_email)
+        mock_async_to_sync.assert_called_once()
+        called_prompt = mock_execute_sales_agent.call_args[0][0]
+        self.assertIn("Acme Corp", called_prompt)
+        self.assertIn("Widget X", called_prompt)
+        self.assertIn("feedback", called_prompt)
+        self.assertIn("$100/month", called_prompt)

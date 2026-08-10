@@ -1,9 +1,14 @@
+import json
+
 from django.contrib.auth.models import AnonymousUser, User
 from django.contrib.sessions.middleware import SessionMiddleware
+from django.http import JsonResponse
 from django.test import Client, RequestFactory, SimpleTestCase, TestCase
 from django.urls import reverse
+from unittest.mock import MagicMock, patch
 
-from ..views import intake_form
+from ..views import intake_form, submit_form_view
+from ..forms import IntakeForm
 
 
 class TestStartingPageView(SimpleTestCase):
@@ -135,3 +140,70 @@ class IntakeFormViewTests(TestCase):
             'the max!</textarea>'), html_content)
         self.assertIn(('<input type="radio" name="tone_of_email" value="fun" '
             'id="id_tone_of_email_1" required checked>'), html_content)
+
+
+class SubmitFormViewTests(TestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
+        self.client = Client()
+
+    def test_successful_form_submission(self):
+        """A valid POST request saves data to the session and returns a 200 JSON success response."""
+        valid_form_submission_data = {
+            'company_name': 'Acme Corp',
+            'product_name': 'Widget X',
+            'product_details': 'A highly efficient widget.',
+            'tone_of_email': 'serious'
+        }
+        request = self.factory.post('/submit-form-view/', data=valid_form_submission_data)
+        
+        request.session = self.client.session
+
+        response = submit_form_view(request)
+
+        # Assert response status and type
+        self.assertIsInstance(response, JsonResponse)
+        self.assertEqual(response.status_code, 200)
+
+        # Assert JSON payload content
+        response_data = json.loads(response.content)
+        self.assertTrue(response_data['success'])
+        self.assertEqual(response_data['message'], 'Form submitted successfully!')
+
+        self.assertEqual(request.session['company_name'], 'Acme Corp')
+        self.assertEqual(request.session['product_name'], 'Widget X')
+        self.assertEqual(request.session['product_details'], 'A highly efficient widget.')
+        self.assertEqual(request.session['tone_of_email'], 'serious')
+        self.assertEqual(request.session['saved_form_data']['company_name'], 'Acme Corp')
+
+    def test_invalid_form_submission(self):
+        """An invalid POST request returns a 400 JSON error response containing form validation errors."""
+        invalid_data = {}
+        request = self.factory.post('/submit-form-view/', data=invalid_data)
+        request.session = self.client.session
+
+        response = submit_form_view(request)
+
+        # Assert response status and type
+        self.assertIsInstance(response, JsonResponse)
+        self.assertEqual(response.status_code, 400)
+
+        # Assert JSON payload content structure
+        response_data = json.loads(response.content)
+        self.assertFalse(response_data['success'])
+        self.assertIn('errors', response_data)
+    
+    def test_invalid_request_method_get(self):
+        """A GET request is rejected with a 405 status code and error message."""
+        request = self.factory.get('/submit-form-view/')
+        
+        response = submit_form_view(request)
+
+        # Assert response status and type
+        self.assertIsInstance(response, JsonResponse)
+        self.assertEqual(response.status_code, 405)
+
+        # Assert JSON payload content
+        response_data = json.loads(response.content)
+        self.assertFalse(response_data['success'])
+        self.assertEqual(response_data['errors'], 'Invalid request method')

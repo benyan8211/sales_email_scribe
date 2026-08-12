@@ -1,7 +1,12 @@
-from django.contrib.auth.models import User
 from django.test import TestCase
 
-from ..forms import AIFeedbackForm, IntakeForm, StarRatingField, StarWidget, UserExperienceFeedbackForm
+from ..forms import (
+    AIFeedbackForm,
+    IntakeForm,
+    StarRatingField,
+    StarWidget,
+    UserExperienceFeedbackForm,
+)
 
 
 class IntakeFormTests(TestCase):
@@ -16,7 +21,7 @@ class IntakeFormTests(TestCase):
         form = IntakeForm(data=valid_data)
 
         self.assertTrue(form.is_valid())
-    
+
     def test_empty_fields_fails_validation(self):
         """Test empty fields returns a validation error."""
         invalid_data = {
@@ -32,10 +37,22 @@ class IntakeFormTests(TestCase):
         self.assertIn('product_name', form.errors)
         self.assertIn('product_details', form.errors)
         self.assertIn('tone_of_email', form.errors)
-        self.assertEqual(form.errors['company_name'][0], "Your company's name cannot be blank.")
-        self.assertEqual(form.errors['product_name'][0], "Your company's product/service name cannot be blank.")
-        self.assertEqual(form.errors['product_details'][0], "Your company's product/service description cannot be blank.")
-        self.assertEqual(form.errors['tone_of_email'][0], "You must select an option.")
+        self.assertEqual(
+            form.errors['company_name'][0],
+            "Your company's name cannot be blank."
+        )
+        self.assertEqual(
+            form.errors['product_name'][0],
+            "Your company's product/service name cannot be blank."
+        )
+        self.assertEqual(
+            form.errors['product_details'][0],
+            "Your company's product/service description cannot be blank."
+        )
+        self.assertEqual(
+            form.errors['tone_of_email'][0],
+            "You must select an option."
+        )
 
 class AIFeedbackFormTests(TestCase):
     def test_ai_feedback_form_with_valid_data(self):
@@ -46,7 +63,7 @@ class AIFeedbackFormTests(TestCase):
         form = AIFeedbackForm(data=valid_data)
 
         self.assertTrue(form.is_valid())
-    
+
     def test_empty_fields_fails_validation(self):
         """Test empty fields returns a validation error."""
         invalid_data = {
@@ -83,7 +100,7 @@ class StarRatingFieldTests(TestCase):
     def test_init_sets_widget_and_choices(self):
         """Verify StarWidget used and 5-to-1 choices maintained."""
         field = StarRatingField(choices=[(10, '10')])
-        
+
         expected_choices = [(5, '5'), (4, '4'), (3, '3'), (2, '2'), (1, '1')]
         self.assertEqual(field.choices, expected_choices)
         self.assertIsInstance(field.widget, StarWidget)

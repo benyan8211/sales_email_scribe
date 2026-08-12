@@ -1,5 +1,6 @@
 from django.test import TestCase
-from ..models import Feedback 
+
+from ..models import Feedback
 
 
 class FeedbackModelTests(TestCase):

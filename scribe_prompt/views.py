@@ -16,8 +16,6 @@ from .utils import execute_sales_agent
 if os.path.exists(".env"):
     load_dotenv()
 
-# Create your views here.
-
 def starting_page(request):
     return render(request, 'scribe_prompt/starting_page.html')
 
@@ -29,7 +27,6 @@ def intake_form(request):
     is_returning = request.GET.get('edit') == 'true'
 
     if is_returning and 'saved_form_data' in request.session:
-        # Prepopulate only if they clicked the back button
         form = IntakeForm(request.session['saved_form_data'])
     else:
         form = IntakeForm()
@@ -200,7 +197,6 @@ def send_ai_generated_email_to_user(request):
         'ai_generated_sales_email': request.session['sales_email']
     })
 
-    # Send the email message
     send_mail(
         subject,
         message="Please use an HTML-compatible email client.",

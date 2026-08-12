@@ -40,7 +40,6 @@ class LoginViewTests(TestCase):
     @patch('accounts.views.login')
     def test_successful_login(self, mock_login, mock_authenticate):
         """A valid login authentication should redirect to the root URL."""
-        # Setup mock user and authentication success
         mock_user = object()
         mock_authenticate.return_value = mock_user
         valid_credentials = {
@@ -379,7 +378,6 @@ class ActivateViewTests(TestCase):
         self.client = Client()
         self.url_name = "activate"
 
-        # Create an inactive user for testing activation
         self.user = User.objects.create_user(
             username="test@example.com",
             password="securepassword123",

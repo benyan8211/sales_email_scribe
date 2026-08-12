@@ -9,7 +9,6 @@ if os.path.exists(".env"):
 
 async def execute_sales_agent(system_prompt):
     sales_agent = Agent(name="Sales Agent", instructions=system_prompt, model="gpt-5.4")
-    # The 'trace' context customizes metadata visible on your OpenAI Dashboard
     with trace("Write a sales email"):
         result = await Runner.run(sales_agent, "Write a sales email")
         return result.final_output

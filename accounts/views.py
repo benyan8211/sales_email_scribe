@@ -24,11 +24,9 @@ def signup_view(request):
                 user.is_active = False  # Deactivate account until email verification
                 user.save()
 
-                # Gather domain details to construct the verification URL
                 current_site = get_current_site(request)
                 subject = '[Sales Email Scribe] Activate Your Account'
 
-                # Render the email text body from a template
                 message = render_to_string('accounts/activation_email.html', {
                     'user': user,
                     'domain': current_site.domain,
@@ -43,7 +41,6 @@ def signup_view(request):
                     print(activation_url)
                     print("-----------------------------------------\n")
                 else:
-                    # Send the email message
                     send_mail(
                         subject,
                         message="Please use an HTML-compatible email client.",
@@ -53,20 +50,16 @@ def signup_view(request):
                     )
                 return render(request, 'accounts/activation_sent.html')
         except requests.exceptions.HTTPError:
-        # Handles 404, 500, etc.
             messages.error(request, ("HTTP Request Failed! "
                 "Please try again later."))
         except requests.exceptions.ConnectionError:
-            # Handles network down, DNS failures
             messages.error(request, ("Failed to establish a connection "
                 "to the server! Please check your internet connection "
                 "and try again."))
         except requests.exceptions.Timeout:
-            # Handles slow/stalled API servers
             messages.error(request, ("The server is taking too long to respond. "
                 "Please try again later."))
         except requests.exceptions.RequestException:
-            # Fallback catch-all for any requests-related error
             messages.error(request, ("An unexpected error occurred! "
                 "Please try again later."))
     else:
@@ -101,20 +94,16 @@ def login_view(request):
                     login(request, user)
                     return HttpResponseRedirect("/")
         except requests.exceptions.HTTPError:
-        # Handles 404, 500, etc.
             messages.error(request, ("HTTP Request Failed! "
                 "Please try again later."))
         except requests.exceptions.ConnectionError:
-            # Handles network down, DNS failures
             messages.error(request, ("Failed to establish a connection "
                 "to the server! Please check your internet connection "
                 "and try again."))
         except requests.exceptions.Timeout:
-            # Handles slow/stalled API servers
             messages.error(request, ("The server is taking too long to respond. "
                 "Please try again later."))
         except requests.exceptions.RequestException:
-            # Fallback catch-all for any requests-related error
             messages.error(request, ("An unexpected error occurred! "
                 "Please try again later."))
     else:

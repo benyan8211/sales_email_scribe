@@ -28,7 +28,6 @@ class BaseTemplateDirectUnitTest(SimpleTestCase):
         """
         compiled_template = Template(template_to_render)
 
-        # Keep the context clear of complex objects to avoid DB queries
         context = Context(
             {
                 'user': {

@@ -79,7 +79,6 @@ class SignUpFormTest(TestCase):
 
     def test_clean_email_duplicate_throws_error(self):
         """Ensure clean_email raises a ValidationError if the email already exists."""
-        # Create an existing user with the target email
         User.objects.create_user(
             username='existing_user@example.com',
             email='existing_user@example.com',

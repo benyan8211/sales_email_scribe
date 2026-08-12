@@ -11,6 +11,7 @@ from ..views import (
     give_ai_feedback_view,
     intake_form,
     review_and_feedback,
+    send_ai_generated_email_to_user,
     slow_processing_view,
     slow_processing_view_with_feedback,
     submit_form_view,
@@ -58,7 +59,8 @@ class IntakeFormViewTests(TestCase):
         request = self.factory.get(self.url)
         request.user = self.user
         self._add_session_to_request(request)
-        request.session['sales_email'] = 'test@example.com'
+        request.session['sales_email'] = ("<html><body><div style='text-align:center;'>"
+            "Subject: Unit Test</div><br><p>Content</p></body></html>")
         request.session.save()
 
         response = intake_form(request)
@@ -379,3 +381,56 @@ class SlowProcessingViewWithFeedbackTests(TestCase):
         self.assertIn("Widget X", called_prompt)
         self.assertIn("feedback", called_prompt)
         self.assertIn("$100/month", called_prompt)
+
+class SendAIGeneratedEmailToUserView(TestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
+        self.user = User.objects.create_user(
+            email='test@example.com',
+            username='test@example.com',
+            password='securepassword123'
+        )
+    
+    def _add_session_to_request(self, request):
+        """Helper to add session support to RequestFactory requests."""
+        middleware = SessionMiddleware(get_response=lambda r: None)
+        middleware.process_request(request)
+        request.session.save()
+    
+    @patch('scribe_prompt.views.send_mail')
+    @patch('scribe_prompt.views.render_to_string')
+    @patch('scribe_prompt.views.settings')
+    def test_success_send_ai_generated_email_to_user(self, mock_settings, mock_render, mock_send_mail):
+        mock_settings.DEBUG = False
+        mock_settings.EMAIL_HOST_USER = 'noreply@example.com'
+        mock_render.return_value = 'rendered email html content'
+
+        request = self.factory.get('/send-ai-generated-email-to-user/')
+        self._add_session_to_request(request)
+        request.user = self.user
+        request.session['sales_email'] = ("<html><body><div style='text-align:center;'>"
+            "Subject: Unit Test</div><br><p>Content</p></body></html>")
+        request.session.save()
+
+        response = send_ai_generated_email_to_user(request)
+
+        mock_render.assert_called_once_with(
+            'scribe_prompt/ai_generated_email.html',
+            {
+                'user': self.user,
+                'ai_generated_sales_email': request.session['sales_email']
+            }
+        )
+        mock_send_mail.assert_called_once_with(
+            '[Sales Email Scribe] Your Requested AI generated sales email',
+            message="Please use an HTML-compatible email client.",
+            from_email='noreply@example.com',
+            recipient_list=[request.user.email],
+            html_message='rendered email html content'
+        )
+        self.assertEqual(response.status_code, 200)
+        response_data = json.loads(response.content)
+        self.assertTrue(response_data['success'])
+        self.assertEqual(response_data['message'], 'Form submitted successfully!')
+        
+    

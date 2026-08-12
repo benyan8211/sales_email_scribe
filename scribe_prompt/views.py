@@ -200,8 +200,6 @@ def send_ai_generated_email_to_user(request):
         'ai_generated_sales_email': request.session['sales_email']
     })
 
-    print(message)
-
     # Send the email message
     send_mail(
         subject,

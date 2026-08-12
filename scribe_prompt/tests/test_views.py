@@ -8,6 +8,7 @@ from django.test import Client, RequestFactory, SimpleTestCase, TestCase
 from django.urls import reverse
 
 from ..views import (
+    confirmation,
     give_ai_feedback_view,
     intake_form,
     review_and_feedback,
@@ -24,6 +25,7 @@ class TestStartingPageView(SimpleTestCase):
         self.url = reverse('starting-page')
 
     def test_starting_page_renders_properly(self):
+        """Ensure Starting Page renders propeerly."""
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'scribe_prompt/starting_page.html')
@@ -241,6 +243,7 @@ class ReviewAndFeedbackTests(TestCase):
         self.assertTrue(response.url.startswith('/accounts/login/'))
 
     def test_review_and_feedback_renders_successfully(self):
+        """Ensure that Review and Feedback page renders successfully."""
         request = self.factory.get(self.url)
         request.user = self.user
         self._add_session_to_request(request)
@@ -312,7 +315,7 @@ class SlowProcessingViewTests(TestCase):
     @patch('scribe_prompt.views.async_to_sync')
     def test_slow_processing_view_success(self,
         mock_async_to_sync, mock_execute_sales_agent):
-        """Test that the view executes successfully"""
+        """Test that the ai processing intake form view executes successfully"""
         mock_generated_email = ("<html><body><div style='text-align:center;'>"
             "Subject: Unit Test</div><br><p>Content</p></body></html>")
 
@@ -350,7 +353,7 @@ class SlowProcessingViewWithFeedbackTests(TestCase):
     @patch('scribe_prompt.views.async_to_sync')
     def test_slow_processing_view_success(self,
         mock_async_to_sync, mock_execute_sales_agent):
-        """Test that the view executes successfully"""
+        """Test that ai processing feedback view executes successfully"""
         mock_generated_email = ("<html><body><div style='text-align:center;'>"
             "Subject: Unit Test</div><br><p>Content with Feedback</p></body></html>")
 
@@ -401,6 +404,7 @@ class SendAIGeneratedEmailToUserView(TestCase):
     @patch('scribe_prompt.views.render_to_string')
     @patch('scribe_prompt.views.settings')
     def test_success_send_ai_generated_email_to_user(self, mock_settings, mock_render, mock_send_mail):
+        """Test that sending ai generated email to user works."""
         mock_settings.DEBUG = False
         mock_settings.EMAIL_HOST_USER = 'noreply@example.com'
         mock_render.return_value = 'rendered email html content'
@@ -432,5 +436,33 @@ class SendAIGeneratedEmailToUserView(TestCase):
         response_data = json.loads(response.content)
         self.assertTrue(response_data['success'])
         self.assertEqual(response_data['message'], 'Form submitted successfully!')
+
+class TestConfirmationPageView(TestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
+        self.url = reverse('confirmation')
+        self.user = User.objects.create_user(
+            username='test@example.com',
+            password='securepassword123'
+        )
+    
+    def _add_session_to_request(self, request):
+        """Helper to add session support to RequestFactory requests."""
+        middleware = SessionMiddleware(get_response=lambda r: None)
+        middleware.process_request(request)
+        request.session.save()
+
+    def test_confirmation_page_renders_properly(self):
+        """Ensure that confirmation page renders properly."""
+        request = self.factory.get(self.url)
+        request.user = self.user
+
+        self._add_session_to_request(request)
+
+        response = confirmation(request)
+        html_content = response.content.decode('utf-8')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(('<h1 class="success_message">Success!</h1>'), html_content)
         
     

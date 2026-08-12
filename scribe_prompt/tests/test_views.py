@@ -15,6 +15,7 @@ from ..views import (
     send_ai_generated_email_to_user,
     slow_processing_view,
     slow_processing_view_with_feedback,
+    submit_feedback_form_view,
     submit_form_view,
 )
 
@@ -464,5 +465,68 @@ class TestConfirmationPageView(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertIn(('<h1 class="success_message">Success!</h1>'), html_content)
-        
+
+class SubmitFeedbackFormViewTests(TestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
+        self.client = Client()
+        self.user = User.objects.create_user(
+            email='test@example.com',
+            username='test@example.com',
+            password='securepassword123'
+        )
     
+    def _add_session_to_request(self, request):
+        """Helper to add session support to RequestFactory requests."""
+        middleware = SessionMiddleware(get_response=lambda r: None)
+        middleware.process_request(request)
+        request.session.save()
+    
+    def test_user_feedback_form_submission_success(self):
+        """Ensure that user feedback form submission success."""
+        valid_form_data = {
+            'rating': 4,
+            'comments': "This site rocks!"
+        }
+
+        request = self.factory.post('/submit-feedback-form-view/', data=valid_form_data)
+        self._add_session_to_request(request)
+        request.user = self.user
+        request.session.save()
+
+        response = submit_feedback_form_view(request)
+
+        self.assertIsInstance(response, JsonResponse)
+        self.assertEqual(response.status_code, 200)
+        response_data = json.loads(response.content)
+        self.assertTrue(response_data['success'])
+        self.assertEqual(response_data['message'], 'Form submitted successfully!')
+
+    def test_invalid_user_feedback_form_submission_fails(self):
+        """An invalid user feedback form submission returns error"""
+        invalid_data = {}
+        request = self.factory.post('/submit-feedback-form-view/', data=invalid_data)
+        self._add_session_to_request(request)
+        request.user = self.user
+        request.session.save()
+
+        response = submit_feedback_form_view(request)
+
+        self.assertIsInstance(response, JsonResponse)
+        self.assertEqual(response.status_code, 400)
+        response_data = json.loads(response.content)
+        self.assertFalse(response_data['success'])
+        self.assertIn('errors', response_data)
+
+    def test_invalid_request_method_user_feedback_form_get(self):
+        """A GET request for user feedback form is rejected with a 405 status code and error message."""
+        request = self.factory.get('/submit-feedback-form-view/')
+
+        response = submit_feedback_form_view(request)
+
+        self.assertIsInstance(response, JsonResponse)
+        self.assertEqual(response.status_code, 405)
+        response_data = json.loads(response.content)
+        self.assertFalse(response_data['success'])
+        self.assertEqual(response_data['errors'], 'Invalid request method')
+

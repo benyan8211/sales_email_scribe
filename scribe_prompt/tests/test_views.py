@@ -8,6 +8,7 @@ from django.test import Client, RequestFactory, SimpleTestCase, TestCase
 from django.urls import reverse
 
 from ..views import (
+    give_ai_feedback_view,
     intake_form,
     review_and_feedback,
     slow_processing_view,
@@ -248,6 +249,57 @@ class ReviewAndFeedbackTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertIn(('<div class="spinner"></div>'), html_content)
+
+class GiveAIFeedbackViewTests(TestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
+        self.client = Client()
+    
+    def test_successful_ai_feedback_form_submission(self):
+        """A valid submission of ai feedback form saves data to session and returns success message."""
+        valid_form_submission_data = {
+            'feedback_box': 'Mention that cost is $100/month'
+        }
+        request = self.factory.post(
+            '/give-ai-feedback-view/',
+            data=valid_form_submission_data
+        )
+        request.session = self.client.session
+
+        response = give_ai_feedback_view(request)
+
+        self.assertIsInstance(response, JsonResponse)
+        self.assertEqual(response.status_code, 200)
+        response_data = json.loads(response.content)
+        self.assertTrue(response_data['success'])
+        self.assertEqual(response_data['message'], 'Form is valid')
+        self.assertEqual(request.session['feedback_box'], 'Mention that cost is $100/month')
+
+    def test_invalid_ai_feedback_form_submission(self):
+        """An invalid ai feedback form submission returns error"""
+        invalid_data = {}
+        request = self.factory.post('/give-ai-feedback-view/', data=invalid_data)
+        request.session = self.client.session
+
+        response = give_ai_feedback_view(request)
+
+        self.assertIsInstance(response, JsonResponse)
+        self.assertEqual(response.status_code, 400)
+        response_data = json.loads(response.content)
+        self.assertFalse(response_data['success'])
+        self.assertIn('errors', response_data)
+    
+    def test_invalid_request_method_ai_feedback_form_get(self):
+        """A GET request for ai feedback form is rejected with a 405 status code and error message."""
+        request = self.factory.get('/give-ai-feedback-view/')
+
+        response = give_ai_feedback_view(request)
+
+        self.assertIsInstance(response, JsonResponse)
+        self.assertEqual(response.status_code, 405)
+        response_data = json.loads(response.content)
+        self.assertFalse(response_data['success'])
+        self.assertEqual(response_data['errors'], 'Invalid request method')
 
 class SlowProcessingViewTests(TestCase):
     def setUp(self):

@@ -2,7 +2,7 @@ from django.test import TestCase
 from ..models import Feedback 
 
 
-class FeedbackModelTest(TestCase):
+class FeedbackModelTests(TestCase):
     def setUp(self):
         self.feedback = Feedback.objects.create(
             username="test@example.com", rating=5, comments="Great service!"

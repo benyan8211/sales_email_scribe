@@ -260,9 +260,9 @@ class GiveAIFeedbackViewTests(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
         self.client = Client()
-    
+
     def test_successful_ai_feedback_form_submission(self):
-        """A valid submission of ai feedback form saves data to session and returns success message."""
+        """Ensure valid submission of ai feedback form."""
         valid_form_submission_data = {
             'feedback_box': 'Mention that cost is $100/month'
         }
@@ -279,7 +279,10 @@ class GiveAIFeedbackViewTests(TestCase):
         response_data = json.loads(response.content)
         self.assertTrue(response_data['success'])
         self.assertEqual(response_data['message'], 'Form is valid')
-        self.assertEqual(request.session['feedback_box'], 'Mention that cost is $100/month')
+        self.assertEqual(
+            request.session['feedback_box'],
+            'Mention that cost is $100/month'
+        )
 
     def test_invalid_ai_feedback_form_submission(self):
         """An invalid ai feedback form submission returns error"""
@@ -294,9 +297,9 @@ class GiveAIFeedbackViewTests(TestCase):
         response_data = json.loads(response.content)
         self.assertFalse(response_data['success'])
         self.assertIn('errors', response_data)
-    
+
     def test_invalid_request_method_ai_feedback_form_get(self):
-        """A GET request for ai feedback form is rejected with a 405 status code and error message."""
+        """A GET request for ai feedback form fails."""
         request = self.factory.get('/give-ai-feedback-view/')
 
         response = give_ai_feedback_view(request)
@@ -394,17 +397,18 @@ class SendAIGeneratedEmailToUserView(TestCase):
             username='test@example.com',
             password='securepassword123'
         )
-    
+
     def _add_session_to_request(self, request):
         """Helper to add session support to RequestFactory requests."""
         middleware = SessionMiddleware(get_response=lambda r: None)
         middleware.process_request(request)
         request.session.save()
-    
+
     @patch('scribe_prompt.views.send_mail')
     @patch('scribe_prompt.views.render_to_string')
     @patch('scribe_prompt.views.settings')
-    def test_success_send_ai_generated_email_to_user(self, mock_settings, mock_render, mock_send_mail):
+    def test_success_send_ai_generated_email_to_user(self, mock_settings,
+        mock_render, mock_send_mail):
         """Test that sending ai generated email to user works."""
         mock_settings.DEBUG = False
         mock_settings.EMAIL_HOST_USER = 'noreply@example.com'
@@ -446,7 +450,7 @@ class TestConfirmationPageView(TestCase):
             username='test@example.com',
             password='securepassword123'
         )
-    
+
     def _add_session_to_request(self, request):
         """Helper to add session support to RequestFactory requests."""
         middleware = SessionMiddleware(get_response=lambda r: None)
@@ -475,13 +479,13 @@ class SubmitFeedbackFormViewTests(TestCase):
             username='test@example.com',
             password='securepassword123'
         )
-    
+
     def _add_session_to_request(self, request):
         """Helper to add session support to RequestFactory requests."""
         middleware = SessionMiddleware(get_response=lambda r: None)
         middleware.process_request(request)
         request.session.save()
-    
+
     def test_user_feedback_form_submission_success(self):
         """Ensure that user feedback form submission success."""
         valid_form_data = {
@@ -519,7 +523,7 @@ class SubmitFeedbackFormViewTests(TestCase):
         self.assertIn('errors', response_data)
 
     def test_invalid_request_method_user_feedback_form_get(self):
-        """A GET request for user feedback form is rejected with a 405 status code and error message."""
+        """A GET request for user feedback form fails."""
         request = self.factory.get('/submit-feedback-form-view/')
 
         response = submit_feedback_form_view(request)

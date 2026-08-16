@@ -17,10 +17,13 @@ if os.path.exists(".env"):
     load_dotenv()
 
 def starting_page(request):
+    """Renders the starting page for the whole website."""
     return render(request, 'scribe_prompt/starting_page.html')
 
 @login_required(login_url='/accounts/login/')
 def intake_form(request):
+    """Renders the main intake form for the user
+    to enter in details about their company."""
     if 'sales_email' in request.session:
         del request.session['sales_email']
 
@@ -41,6 +44,8 @@ def intake_form(request):
     )
 
 def submit_form_view(request):
+    """Handles structuring of data with respect to intake form
+    after submission."""
     if request.method == 'POST':
         form = IntakeForm(request.POST)
         if form.is_valid():
@@ -74,6 +79,7 @@ def submit_form_view(request):
 
 @login_required(login_url='/accounts/login/')
 def review_and_feedback(request):
+    """Renders Review and Feedback page."""
     form = AIFeedbackForm()
     return render(
         request,
@@ -85,6 +91,8 @@ def review_and_feedback(request):
     )
 
 def give_ai_feedback_view(request):
+    """Handles structuring of data with respect to
+    feedback submitted to AI."""
     if request.method == 'POST':
         form = AIFeedbackForm(request.POST)
         if form.is_valid():
@@ -111,6 +119,7 @@ def give_ai_feedback_view(request):
     )
 
 def slow_processing_view_with_feedback(request):
+    """Handles processing feedback user submitted to AI."""
     company_name = request.session['company_name']
     product_name = request.session['product_name']
     sales_email = request.session['sales_email']
@@ -139,6 +148,7 @@ def slow_processing_view_with_feedback(request):
     """)
 
 def slow_processing_view(request):
+    """Handles processing of main intake form after submission."""
     if 'sales_email' in request.session:
         return HttpResponse(f"""
             {request.session['sales_email']}
@@ -182,6 +192,7 @@ def slow_processing_view(request):
 
 @login_required(login_url='/accounts/login/')
 def confirmation(request):
+    """Renders confirmation page."""
     form = UserExperienceFeedbackForm()
     return render(
         request,
@@ -190,6 +201,7 @@ def confirmation(request):
     )
 
 def send_ai_generated_email_to_user(request):
+    """Sends final email containing AI generated content to user."""
     user = request.user
     subject = '[Sales Email Scribe] Your Requested AI generated sales email'
     message = render_to_string('scribe_prompt/ai_generated_email.html', {
@@ -211,6 +223,7 @@ def send_ai_generated_email_to_user(request):
     })
 
 def submit_feedback_form_view(request):
+    """Handles submitting user experience feedback."""
     if request.method == 'POST':
         form = UserExperienceFeedbackForm(request.POST)
         if form.is_valid():

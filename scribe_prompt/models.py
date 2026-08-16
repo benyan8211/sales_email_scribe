@@ -2,6 +2,7 @@ from django.db import models
 
 
 class Feedback(models.Model):
+    """Model for providing user experience feedback."""
     username = models.CharField(max_length=100)
     rating = models.IntegerField()
     comments = models.TextField()

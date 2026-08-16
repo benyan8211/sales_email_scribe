@@ -16,6 +16,8 @@ from .tokens import account_activation_token
 
 
 def signup_view(request):
+    """Responsible for processing Sign Up form submission and
+    for rendering Sign Up form."""
     if request.method == 'POST':
         try:
             form = SignUpForm(request.POST)
@@ -67,6 +69,7 @@ def signup_view(request):
     return render(request, 'accounts/signup.html', {'form': form})
 
 def activate_view(request, uidb64, token):
+    """Handles user account activation."""
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
         user = User.objects.get(pk=uid)
@@ -81,6 +84,8 @@ def activate_view(request, uidb64, token):
         return render(request, 'accounts/activation_invalid.html')
 
 def login_view(request):
+    """Handles processing of Login form submission
+    and for rendering Login form."""
     if request.method == 'POST':
         try:
             form = LoginForm(request, data=request.POST)
@@ -113,5 +118,6 @@ def login_view(request):
     return render(request, 'accounts/login.html', {'form': form})
 
 def logout_view(request):
+    """Handles user logout."""
     logout(request)
     return redirect('login')

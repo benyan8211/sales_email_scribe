@@ -4,6 +4,7 @@ from .models import Feedback
 
 
 class IntakeForm(forms.Form):
+    """Form to gather user company details."""
     company_name = forms.CharField(label="What is your company's name?",
         max_length=100, help_text="Maximum 100 characters.",
         error_messages={"required": "Your company's name cannot be blank."})
@@ -41,6 +42,7 @@ class IntakeForm(forms.Form):
     required_css_class = 'required'
 
 class AIFeedbackForm(forms.Form):
+    """Form to provide feedback to AI."""
     feedback_box = forms.CharField(label=("Please give the AI feedback on how it can "
         "improve the email. Please be specific."),
         widget=forms.Textarea, max_length=2000,
@@ -50,6 +52,7 @@ class AIFeedbackForm(forms.Form):
     required_css_class = 'required'
 
 class StarWidget(forms.RadioSelect):
+    """Widget for star based rating."""
     template_name = 'widgets/star_rating.html'
 
     def optgroups(self, name, value, attrs=None):
@@ -61,12 +64,14 @@ class StarWidget(forms.RadioSelect):
         return groups
 
 class StarRatingField(forms.ChoiceField):
+    """Field for star based rating."""
     widget = StarWidget
     def __init__(self, *args, **kwargs):
         kwargs['choices'] = [(i, str(i)) for i in range(5, 0, -1)]
         super().__init__(*args, **kwargs)
 
 class UserExperienceFeedbackForm(forms.ModelForm):
+    """Form for submitting user experience feedback."""
     rating = StarRatingField(label="How was your experience today?")
 
     comments = forms.CharField(label="Let us know your thoughts below!",

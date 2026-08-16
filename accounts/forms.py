@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 
 
 class SignUpForm(UserCreationForm):
+    """Form to enable new users to sign up to website."""
     email = forms.EmailField(required=True, label="Email")
 
     class Meta:
@@ -34,6 +35,7 @@ class SignUpForm(UserCreationForm):
         return user
 
 class LoginForm(AuthenticationForm):
+    """Form to enable existing users to log in."""
     error_messages = {
         'invalid_login': "Invalid email and/or password.",
     }

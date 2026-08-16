@@ -8,6 +8,8 @@ if os.path.exists(".env"):
     load_dotenv()
 
 async def execute_sales_agent(system_prompt):
+    """Handles API call to OpenAI Agents SDK to request
+    LLM write sales email."""
     sales_agent = Agent(name="Sales Agent", instructions=system_prompt, model="gpt-5.4")
     with trace("Write a sales email"):
         result = await Runner.run(sales_agent, "Write a sales email")
